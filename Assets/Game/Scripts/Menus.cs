@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -19,16 +17,6 @@ public class Menus : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         SceneManager.LoadScene(1);
     }
-    //public void Configuracoes()
-    //{
-    //    SceneManager.LoadScene(0);
-    //}
-
-    //public void Creditos()
-    //{
-    //    SceneManager.LoadScene(0);
-    //}
-
 
     public void SairJogo()
     {

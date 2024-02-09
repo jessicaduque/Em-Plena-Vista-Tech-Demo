@@ -1,18 +1,16 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerBody : MonoBehaviour
 {
-    private GameObject Canalizador;
+    private Canalizador Canalizador;
 
     public void ReceberCanalizador(GameObject canali)
     {
-        Canalizador = canali;
+        Canalizador = canali.GetComponent<Canalizador>();
     }
 
-    public void AcabouTroca()
+    public void CanalizingFinished()
     {
-        Canalizador.GetComponent<Canalizador>().AcabouTroca();
+        StartCoroutine(Canalizador.FinishCanalizingCutscene());
     }
 }

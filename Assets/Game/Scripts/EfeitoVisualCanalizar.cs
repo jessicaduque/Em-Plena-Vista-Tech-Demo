@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Cinemachine;
 
@@ -17,28 +15,34 @@ public class EfeitoVisualCanalizar : MonoBehaviour
     [SerializeField]
     float Pretodec;
 
+    CinemachineTransposer transposer;
+
     bool finalizando = false;
 
     bool cam = false;
     bool preta = false;
 
-    private void Update()
+    private void Awake()
     {
-        if (finalizando)
-        {
-            NaoCanalizando();
-        }
-        else
-        {
-            preta = false;
-            cam = false;
-        }
+        transposer = vcam.GetCinemachineComponent<CinemachineTransposer>();
     }
 
-    public void Canalizando()
+    //private void Update()
+    //{
+    //    if (finalizando)
+    //    {
+    //        ZoomOutEffects();
+    //    }
+    //    else
+    //    {
+    //        preta = false;
+    //        cam = false;
+    //    }
+    //}
+
+    public bool ZoomInEffects()
     {
         // Parte da cam
-        var transposer = vcam.GetCinemachineComponent<CinemachineTransposer>();
         float zAtual = transposer.m_FollowOffset.z;
         if (zAtual < zMin)
         {
@@ -50,40 +54,43 @@ public class EfeitoVisualCanalizar : MonoBehaviour
         {
             canvasGroup.alpha += Pretodec * Time.deltaTime;
         }
+
+        return canvasGroup.alpha >= 1 && zAtual >= zMin;
     }
 
-    public void NaoCanalizando()
+    public bool ZoomOutEffects()
     {
         // Parte da cam
         finalizando = true;
-        var transposer = vcam.GetCinemachineComponent<CinemachineTransposer>();
         float zAtual = transposer.m_FollowOffset.z;
         if (zAtual > zOriginal)
         {
             transposer.m_FollowOffset -= new Vector3(0, 0, Zdec) * Time.deltaTime;
-            cam = false;
+            //cam = false;
         }
-        else
-        {
-            transposer.m_FollowOffset = new Vector3(transposer.m_FollowOffset.x, transposer.m_FollowOffset.y, zOriginal);
-            cam = true;
-        }
+        //else
+        //{
+        //    transposer.m_FollowOffset = new Vector3(transposer.m_FollowOffset.x, transposer.m_FollowOffset.y, zOriginal);
+        //    cam = true;
+        //}
 
         // Parte da tela preta
         if (canvasGroup.alpha > 0)
         {
-            preta = false;
+            //preta = false;
             canvasGroup.alpha -= Pretodec * Time.deltaTime;
         }
-        else
-        {
-            preta = true;
-        }
+        //else
+        //{
+        //    preta = true;
+        //}
 
-        if(preta && cam)
-        {
-            finalizando = false;
-        }
+        //if(preta && cam)
+        //{
+        //    finalizando = false;
+        //}
+
+        return zAtual <= zOriginal && canvasGroup.alpha < 0;
     }
 
 }
