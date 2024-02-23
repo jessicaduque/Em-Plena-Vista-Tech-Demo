@@ -36684,7 +36684,7 @@ AnimationClip:
   m_HasMotionFloatCurves: 0
   m_Events:
   - time: 4.4
-    functionName: AcabouTroca
+    functionName: CanalizingFinished
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0

@@ -10,11 +10,11 @@ TagManager:
   - PedraPesada
   - Pilar
   - Checkpoint
-  - Raiz1
-  - Raiz2
   - Canalizador
   - PuzzleRuinas
   - GameOver
+  - Root1
+  - Root2
   layers:
   - Default
   - TransparentFX
@@ -22,7 +22,7 @@ TagManager:
   - 
   - Water
   - UI
-  - 
+  - Stone
   - 
   - 
   - 
