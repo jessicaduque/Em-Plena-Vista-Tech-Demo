@@ -6,25 +6,25 @@ using DG.Tweening;
 public class TeleportPlayer : MonoBehaviour
 {
     protected GameObject Player;
-    protected Personagem PlayerScript;
+    protected PlayerController PlayerScript;
     protected CanvasGroup blackScreen_CanvasGroup;
+    protected GameObject CorpoMonge;
 
     [SerializeField] protected Vector3 finalPosition;
     [SerializeField] protected Vector3 lookingDirection;
 
-    // TEMPORARIO
-    public GameObject CorpoMonge;
     BlackScreenController _blackScreenController => BlackScreenController.I;
 
 
     private void Awake()
     {
         Player = GameObject.FindGameObjectWithTag("Player");
-        PlayerScript = Player.GetComponent<Personagem>();
+        PlayerScript = Player.GetComponent<PlayerController>();
     }
     private void Start()
     {
         blackScreen_CanvasGroup = BlackScreenController.I.GetBlackPanelCanvasGroup();
+        CorpoMonge = PlayerScript.GetPlayerBody();
     }
 
     protected virtual void OnTriggerEnter(Collider collision)

@@ -5,7 +5,7 @@ using DG.Tweening;
 public class UIManager : Singleton<UIManager>
 {
     GameObject Player;
-    Personagem PlayerScript;
+    PlayerController PlayerScript;
 
     [SerializeField] CanvasGroup EndPanel_CanvasGroup;
 
@@ -14,7 +14,7 @@ public class UIManager : Singleton<UIManager>
         base.Awake();
 
         Player = GameObject.FindGameObjectWithTag("Player");
-        PlayerScript = Player.GetComponent<Personagem>();
+        PlayerScript = Player.GetComponent<PlayerController>();
     }
 
     public void ControlEndPanel(bool state)

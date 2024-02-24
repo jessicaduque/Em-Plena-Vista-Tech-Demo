@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class Canalizador : MonoBehaviour
 {
     GameObject Player;
-    Personagem PlayerScript;
+    PlayerController PlayerScript;
     bool isCanalizing = false;
 
     [SerializeField] EfeitoVisualCanalizar canalizingEffectScript;
@@ -16,7 +16,7 @@ public class Canalizador : MonoBehaviour
     void Awake()
     {
         Player = GameObject.FindGameObjectWithTag("Player");
-        PlayerScript = Player.GetComponent<Personagem>();
+        PlayerScript = Player.GetComponent<PlayerController>();
     }
 
     private void OnValidate()
@@ -91,7 +91,7 @@ public class Canalizador : MonoBehaviour
 
     void FinishCanalize()
     {
-        Player.GetComponent<Personagem>().SetCanMove(true);
+        PlayerScript.SetCanMove(true);
         ParticlesEffect.SetActive(false);
         isCanalizing = false;
     }
@@ -110,7 +110,7 @@ public class Canalizador : MonoBehaviour
     #region Player animation canalize
     void AnimatePlayerActivation()
     {
-        Player.GetComponent<Personagem>().Anim.SetTrigger("Canalizar");
+        PlayerScript.thisAnimator.SetTrigger("Canalizar");
     }
 
     #endregion
@@ -127,7 +127,7 @@ public class Canalizador : MonoBehaviour
                 StartCanalize();
                 AnimatePlayerActivation();
                 GameObject.FindGameObjectWithTag("GameController").GetComponent<LevelManager>().SwitchActiveRoots();
-                playerBody.GetComponent<PlayerBody>().ReceberCanalizador(this.gameObject);
+                PlayerScript.ReceberCanalizador(this.gameObject);
                 InteractionButton.gameObject.SetActive(false);
                 isCanalizing = true;
             }

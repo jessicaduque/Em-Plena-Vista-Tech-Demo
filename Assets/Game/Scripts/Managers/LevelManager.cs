@@ -59,7 +59,6 @@ public class LevelManager : Singleton<LevelManager>
 
     public void ActivateRoots(int roots)
     {
-
         if (roots == 2)
         {
             for (int i = 0; i < Roots1.Length; i++)

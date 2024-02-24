@@ -3,43 +3,39 @@ using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
 
-public class Personagem : MonoBehaviour
+public class PlayerController : MonoBehaviour
 {
     public LayerMask semRC;
 
-    private Rigidbody Corpo;
-    public Animator Anim;
+    private Rigidbody thisRb;
+    public Animator thisAnimator;
+
+    //TEMPORARIO
     [SerializeField] GameObject CorpoMonge;
 
-    [SerializeField]
-    float sensibilidadeGiro = 400;
-    [SerializeField]
-    float velocidadeAndar = 4;
-    private float velocidadeFinal = 0;
-    [SerializeField]
-    bool esperandoSegundos = false;
+    [SerializeField] float turnSensibility = 400;
+    [SerializeField] float WalkSpeed = 4;
 
-    private bool recebeuInputMover;
-    public bool estaNoChao = true;
+    float finalVelocity = 0;
+
+    private bool recievedMovementInput;
     bool canMove = true;
-    bool touroDomado = false;
 
     [SerializeField]
-    private GameObject MaoColisor;
+    private GameObject HandCollider;
 
     [SerializeField]
-    private Vector3 posInicial;
+    private Vector3 initialPosition;
 
-    float tempo = 0.0f;
-    float segundosParaEsperar;
+    private Canalizador Canalizador;
 
     // Sistema checkpoints
     Vector3[] infoCheckpoint = new Vector3[2];
-    GameObject[] PedrasParaReset;
-    int raizesAtivadosCheckpoint;
+    GameObject[] RocksToReset;
+    int activatedRoots;
 
     // Puzzle das pedras
-    bool empurrandoPedra = false;
+    bool pushingStone = false;
     Transform Pedra;
     Vector3 PedraPosInicial;
     public Vector3 frentePedra;
@@ -53,13 +49,14 @@ public class Personagem : MonoBehaviour
     protected CanvasGroup blackScreen_CanvasGroup;
 
     BlackScreenController _blackScreenController => BlackScreenController.I;
+    LevelManager _levelManager => LevelManager.I;
 
 
     void Awake()
     {
-        Anim = CorpoMonge.GetComponent<Animator>();
-        Corpo = GetComponent<Rigidbody>();
-        //transform.position = posInicial;
+        thisAnimator = CorpoMonge.GetComponent<Animator>();
+        thisRb = GetComponent<Rigidbody>();
+        //transform.position = initialPosition;
         //CorpoMonge = this.gameObject.transform.GetChild(0).gameObject;
     }
 
@@ -73,100 +70,98 @@ public class Personagem : MonoBehaviour
         CorpoMonge.transform.position = transform.position;
 
         // O player só pode se mover se não estiver no meio de empurrar uma pedra
-        ControleMovimento();
+        MovementControl();
         ControleBotaoInteracao();
         // Puzzle das pedras
-        ResetarPuzzlePedras();
-        EmpurrarPedra();
+        ResetStonePuzzle();
+        PushStone();
     }
 
     void FixedUpdate()
     {
-        if (recebeuInputMover && canMove && !esperandoSegundos && !empurrandoPedra)
+        if (recievedMovementInput && canMove && !pushingStone)
         {
-            Mover();
+            Move();
         }
     }
 
-    void ControleMovimento()
+    #region Movement
+
+    void MovementControl()
     {
         if (canMove)
         {
-            if (!esperandoSegundos)
+            if (!pushingStone)
             {
-                if (!empurrandoPedra)
-                {
-                    ReceberInputs();
-                    Girar();
-                    Corpo.constraints = RigidbodyConstraints.FreezeRotation;
-                    AnimacaoAndar();
-                    VirarPersonagemMovimento();
-                }
-
-
+                RecieveInputs();
+                Turn();
+                thisRb.constraints = RigidbodyConstraints.FreezeRotation;
+                WalkAnimation();
+                TurnPlayerMovement();
             }
+
         }
     }
-    void ReceberInputs()
+    void RecieveInputs()
     {
         if (Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0)
         {
-            recebeuInputMover = true;
+            recievedMovementInput = true;
         }
         else
         {
-            recebeuInputMover = false;
+            recievedMovementInput = false;
         }
 
         if (Input.GetKey(KeyCode.LeftShift) || Input.GetAxis("Run") > 0)
         {
-            velocidadeFinal = velocidadeAndar * 1.5f;
+            finalVelocity = WalkSpeed * 1.5f;
         }
         else
         {
-            velocidadeFinal = velocidadeAndar;
+            finalVelocity = WalkSpeed;
         }
 
     }
-    void VirarPersonagemMovimento()
+    void TurnPlayerMovement()
     {
         if (canMove)
         {
             if (Input.GetAxis("Vertical") < 0 && (Input.GetAxis("Horizontal") < 0.3 && Input.GetAxis("Horizontal") > -0.3))
             {
-                RotacionarEmDirecaoAAlgo(CorpoMonge, -transform.forward, 10f);
+                TurnTowards(CorpoMonge, -transform.forward, 10f);
             }
             else if (Input.GetAxis("Vertical") > 0 && (Input.GetAxis("Horizontal") < 0.3 && Input.GetAxis("Horizontal") > -0.3))
             {
-                RotacionarEmDirecaoAAlgo(CorpoMonge, transform.forward, 10f);
+                TurnTowards(CorpoMonge, transform.forward, 10f);
             }
             else if (Input.GetAxis("Vertical") > -0.3f && Input.GetAxis("Vertical") < 0.3f && Input.GetAxis("Horizontal") > 0)
             {
-                RotacionarEmDirecaoAAlgo(CorpoMonge, transform.right, 10f);
+                TurnTowards(CorpoMonge, transform.right, 10f);
             }
             else if (Input.GetAxis("Vertical") > -0.3f && Input.GetAxis("Vertical") < 0.3f && Input.GetAxis("Horizontal") < 0)
             {
-                RotacionarEmDirecaoAAlgo(CorpoMonge, -transform.right, 10f);
+                TurnTowards(CorpoMonge, -transform.right, 10f);
             }
-            else if(Input.GetAxis("Vertical") < 0 && Input.GetAxis("Horizontal") > 0)
+            else if (Input.GetAxis("Vertical") < 0 && Input.GetAxis("Horizontal") > 0)
             {
-                RotacionarEmDirecaoAAlgo(CorpoMonge, -transform.forward + transform.right, 10f);
+                TurnTowards(CorpoMonge, -transform.forward + transform.right, 10f);
             }
             else if (Input.GetAxis("Vertical") < 0 && Input.GetAxis("Horizontal") < 0)
             {
-                RotacionarEmDirecaoAAlgo(CorpoMonge, -transform.forward + -transform.right, 10f);
+                TurnTowards(CorpoMonge, -transform.forward + -transform.right, 10f);
             }
             else if (Input.GetAxis("Vertical") > 0 && Input.GetAxis("Horizontal") > 0)
             {
-                RotacionarEmDirecaoAAlgo(CorpoMonge, transform.forward + transform.right, 10f);
+                TurnTowards(CorpoMonge, transform.forward + transform.right, 10f);
             }
             else if (Input.GetAxis("Vertical") > 0 && Input.GetAxis("Horizontal") < 0)
             {
-                RotacionarEmDirecaoAAlgo(CorpoMonge, transform.forward + -transform.right, 10f);
+                TurnTowards(CorpoMonge, transform.forward + -transform.right, 10f);
             }
-            else if(Input.GetAxis("Mouse X") == 0 && this.gameObject.transform.forward != CorpoMonge.transform.forward)
+            else if (Input.GetAxis("Mouse X") == 0 && this.gameObject.transform.forward != CorpoMonge.transform.forward)
             {
-                RotacionarEmDirecaoAAlgo(this.gameObject, CorpoMonge.transform.forward, 2f);
+                TurnTowards(this.gameObject, CorpoMonge.transform.forward, 2f);
             }
             else
             {
@@ -175,54 +170,64 @@ public class Personagem : MonoBehaviour
         }
         else
         {
-            RotacionarEmDirecaoAAlgo(CorpoMonge.gameObject, transform.forward, 2.5f);
+            TurnTowards(CorpoMonge.gameObject, transform.forward, 2.5f);
         }
 
     }
 
-    void AnimacaoAndar()
+    void WalkAnimation()
     {
         if (canMove)
         {
             if ((Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0) && !Input.GetKey(KeyCode.LeftShift))
             {
-                Anim.SetBool("Correndo", false);
-                Anim.SetBool("Andando", true);
-                
+                thisAnimator.SetBool("Correndo", false);
+                thisAnimator.SetBool("Andando", true);
+
             }
             else if ((Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0) && Input.GetKey(KeyCode.LeftShift))
             {
-                Anim.SetBool("Andando", false);
-                Anim.SetBool("Correndo", true);
+                thisAnimator.SetBool("Andando", false);
+                thisAnimator.SetBool("Correndo", true);
             }
             else
             {
-                Anim.SetBool("Correndo", false);
-                Anim.SetBool("Andando", false);
+                thisAnimator.SetBool("Correndo", false);
+                thisAnimator.SetBool("Andando", false);
             }
 
         }
     }
 
-    void Mover()
+    void Move()
     {
         float velocidadeZ;
         float velocidadeX;
 
-        velocidadeZ = Input.GetAxis("Vertical") * velocidadeFinal;
-        velocidadeX = Input.GetAxis("Horizontal") * velocidadeFinal;
+        velocidadeZ = Input.GetAxis("Vertical") * finalVelocity;
+        velocidadeX = Input.GetAxis("Horizontal") * finalVelocity;
 
         //velocidadeX = 0;
         Vector3 velocidadeCorrigida = velocidadeX * transform.right + velocidadeZ * transform.forward;
 
-        Corpo.velocity = new Vector3(velocidadeCorrigida.x, Corpo.velocity.y, velocidadeCorrigida.z);
+        thisRb.velocity = new Vector3(velocidadeCorrigida.x, thisRb.velocity.y, velocidadeCorrigida.z);
     }
 
-    void Girar()
+    void Turn()
     {
-        float GiroY = Input.GetAxis("Mouse X") * sensibilidadeGiro * Time.deltaTime;
+        float GiroY = Input.GetAxis("Mouse X") * turnSensibility * Time.deltaTime;
         transform.Rotate(Vector3.up * GiroY);
     }
+
+    public void TurnTowards(GameObject obj, Vector3 ondeOlhar, float velocidadeGiro)
+    {
+        Vector3 newDirection = Vector3.RotateTowards(obj.transform.forward, ondeOlhar, velocidadeGiro * Time.deltaTime, 0.0f);
+        obj.transform.rotation = Quaternion.LookRotation(newDirection);
+    }
+
+    #endregion
+
+    #region Collision
 
     void OnTriggerEnter(Collider colidiu)
     {
@@ -239,52 +244,46 @@ public class Personagem : MonoBehaviour
             {
                 infoCheckpoint[0] = new Vector3(colidiu.gameObject.transform.position.x, transform.position.y, colidiu.gameObject.transform.position.z);
                 infoCheckpoint[1] = colidiu.gameObject.transform.eulerAngles;
-                PedrasParaReset = colidiu.gameObject.GetComponent<Checkpoint>().GetStonesToResetList();
-                raizesAtivadosCheckpoint = GameObject.FindGameObjectWithTag("GameController").GetComponent<LevelManager>().GetActiveRoots();
+                RocksToReset = colidiu.gameObject.GetComponent<Checkpoint>().GetStonesToResetList();
+                activatedRoots = _levelManager.GetActiveRoots();
                 Destroy(colidiu.gameObject);
             }
         }
 
     }
-    public void RotacionarEmDirecaoAAlgo(GameObject obj, Vector3 ondeOlhar, float velocidadeGiro)
-    {
-        Vector3 newDirection = Vector3.RotateTowards(obj.transform.forward, ondeOlhar, velocidadeGiro * Time.deltaTime, 0.0f);
-        obj.transform.rotation = Quaternion.LookRotation(newDirection);
-    }
 
-    public bool SeTouroEstaDomado()
-    {
-        return touroDomado;
-    }
+    #endregion
 
     void ControleBotaoInteracao()
     {
-        PertoCanalizador();
-        if(longeCanalizador && semPedra)
+        NearCanalizer();
+        if (longeCanalizador && semPedra)
         {
             BotaoInteracao.gameObject.SetActive(false);
         }
     }
 
-    void EmpurrarPedra()
+    #region Stone Puzzle
+
+    void PushStone()
     {
-        if (!empurrandoPedra)
+        if (!pushingStone)
         {
-            Pedra = ChecarSePertoDePedra();
+            Pedra = IsNearStone();
             if (Pedra != null)
             {
-                if (ChecarSePodeMoverPedra() && EncontrarFrentePedra(Pedra) != new Vector3(0, 0, 0))
+                if (CheckIfMovingStone() && EncontrarFrentePedra(Pedra) != new Vector3(0, 0, 0))
                 {
                     semPedra = false;
                     if ((Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.JoystickButton3)))
                     {
                         frentePedra = EncontrarFrentePedra(Pedra);
                         PedraPosInicial = Pedra.transform.position;
-                        AnimacaoEmpurrarPedra(0);
-                        Corpo.transform.position -= Corpo.transform.forward * 0.8f;
-                        MaoColisor.SetActive(true);
+                        PushingStoneAnimation(0);
+                        thisRb.transform.position -= thisRb.transform.forward * 0.8f;
+                        HandCollider.SetActive(true);
                         BotaoInteracao.gameObject.SetActive(false);
-                        empurrandoPedra = true;
+                        pushingStone = true;
                     }
                     else
                     {
@@ -302,8 +301,8 @@ public class Personagem : MonoBehaviour
             float velocidadeGiroParaPedra = 1f;
             float rapidezEmpurrar = 0.5f;
 
-            RotacionarEmDirecaoAAlgo(this.gameObject, frentePedra, velocidadeGiroParaPedra);
-            RotacionarEmDirecaoAAlgo(CorpoMonge, frentePedra, velocidadeGiroParaPedra);
+            TurnTowards(this.gameObject, frentePedra, velocidadeGiroParaPedra);
+            TurnTowards(CorpoMonge, frentePedra, velocidadeGiroParaPedra);
             StartCoroutine(SetCanMove(true));
             Pedra.GetComponent<Rigidbody>().mass = 1;
 
@@ -312,15 +311,15 @@ public class Personagem : MonoBehaviour
             if (frentePedra.x == 0)
             {
                 Pedra.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezeRotation;
-                Corpo.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezeRotation; 
+                thisRb.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezeRotation;
             }
             else
             {
                 Pedra.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezeRotation;
-                Corpo.constraints = RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezeRotation;
+                thisRb.constraints = RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezeRotation;
             }
 
-            Corpo.velocity = velocidadeAndar * rapidezEmpurrar * frentePedra;
+            thisRb.velocity = WalkSpeed * rapidezEmpurrar * frentePedra;
 
 
             float tpzI = PedraPosInicial.z;
@@ -330,38 +329,31 @@ public class Personagem : MonoBehaviour
 
             if (System.Math.Round(tpz, 0) == System.Math.Round(tpzI - 8, 0) || System.Math.Round(tpz, 0) == System.Math.Round(tpzI + 8, 0) || System.Math.Round(tpx, 0) == System.Math.Round(tpxI + 8, 0) || System.Math.Round(tpx, 0) == System.Math.Round(tpxI - 8, 0))
             {
-                Corpo.velocity = new Vector3(0, 0, 0);
+                thisRb.velocity = new Vector3(0, 0, 0);
                 Pedra.GetComponent<Rigidbody>().velocity = new Vector3(0, 0, 0);
                 Pedra.GetComponent<Rigidbody>().mass = 1000000f;
-                AnimacaoEmpurrarPedra(1);
-                MaoColisor.SetActive(false);
+                PushingStoneAnimation(1);
+                HandCollider.SetActive(false);
                 canMove = true;
-                empurrandoPedra = false;
+                pushingStone = false;
             }
         }
     }
-    void AnimacaoEmpurrarPedra(int estado)
+    void PushingStoneAnimation(int estado)
     {
-        if (touroDomado)
+        if (estado == 0)
         {
-            // Sequência de animações com touro
+            thisAnimator.SetBool("Andando", false);
+            thisAnimator.SetBool("Correndo", false);
+            thisAnimator.SetBool("Empurrando", true);
         }
         else
         {
-            if(estado == 0)
-            {
-                Anim.SetBool("Andando", false);
-                Anim.SetBool("Correndo", false);
-                Anim.SetBool("Empurrando", true);
-            }
-            else
-            {
-                Anim.SetBool("Empurrando", false);
-            }
+            thisAnimator.SetBool("Empurrando", false);
         }
     }
 
-    void PertoCanalizador()
+    void NearCanalizer()
     {
         GameObject[] Canalizadores;
         Canalizadores = GameObject.FindGameObjectsWithTag("Canalizador");
@@ -390,7 +382,18 @@ public class Personagem : MonoBehaviour
         }
     }
 
-    Transform ChecarSePertoDePedra()
+    public void ReceberCanalizador(GameObject canali)
+    {
+        Canalizador = canali.GetComponent<Canalizador>();
+    }
+
+    public void CanalizingFinished()
+    {
+        StartCoroutine(Canalizador.FinishCanalizingCutscene());
+    }
+
+
+    Transform IsNearStone()
     {
         GameObject[] PedrasLeves;
         PedrasLeves = GameObject.FindGameObjectsWithTag("PedraLeve");
@@ -419,20 +422,12 @@ public class Personagem : MonoBehaviour
         }
     }
 
-    bool ChecarSePodeMoverPedra()
+    bool CheckIfMovingStone()
     {
         //Pedra.gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
         frentePedra = EncontrarFrentePedra(Pedra);
         Vector3 direction = frentePedra;
 
-        // Verificação que pode mover a pedra se for pesada
-        if (Pedra.gameObject.tag == "PedraPesada")
-        {
-            if (!touroDomado)
-            {
-                return false;
-            }
-        }
         if (Vector3.Angle(CorpoMonge.transform.forward, direction) > 45)
         {
             return false;
@@ -492,17 +487,17 @@ public class Personagem : MonoBehaviour
         }
     }
 
-    void ResetarPuzzlePedras()
+    void ResetStonePuzzle()
     {
-        if(!esperandoSegundos && !empurrandoPedra && canMove && LevelManager.I.IsInPuzzleArea())
+        if (canMove && !pushingStone && canMove && _levelManager.IsInPuzzleArea())
         {
             if (Input.GetKeyDown(KeyCode.P) || Input.GetKeyDown(KeyCode.JoystickButton5))
             {
-                if(infoCheckpoint[0] != new Vector3(0f, 0f, 0f))
+                if (infoCheckpoint[0] != new Vector3(0f, 0f, 0f))
                 {
-                    Corpo.velocity = new Vector3(0f, 0f, 0f);
-                    Anim.SetBool("Correndo", false);
-                    Anim.SetBool("Andando", false);
+                    thisRb.velocity = new Vector3(0f, 0f, 0f);
+                    thisAnimator.SetBool("Correndo", false);
+                    thisAnimator.SetBool("Andando", false);
                     BotaoInteracao.gameObject.SetActive(false);
                     StartCoroutine(SetCanMove(true));
                     blackScreen_CanvasGroup.DOFade(1, Helpers.blackFadeTime).OnComplete(() =>
@@ -516,6 +511,18 @@ public class Personagem : MonoBehaviour
         }
     }
 
+    public void FinsihPuzzleReset()
+    {
+        _levelManager.ActivateRoots(activatedRoots);
+
+        for (int i = 0; i < RocksToReset.Length; i++)
+        {
+            RocksToReset[i].transform.position = RocksToReset[i].GetComponent<Pedra>().PosicaoInicial;
+        }
+    }
+
+    #endregion
+
     public IEnumerator SetCanMove(bool state)
     {
         if (state)
@@ -525,20 +532,16 @@ public class Personagem : MonoBehaviour
         }
         else
         {
-            Anim.SetBool("Correndo", false);
-            Anim.SetBool("Andando", false);
-            Corpo.velocity = new Vector3(0, 0, 0);
+            thisAnimator.SetBool("Correndo", false);
+            thisAnimator.SetBool("Andando", false);
+            thisRb.velocity = new Vector3(0, 0, 0);
             canMove = false;
         }
     }
 
-    public void TerminarResetPuzzle()
+    public GameObject GetPlayerBody()
     {
-        GameObject.FindGameObjectWithTag("GameController").GetComponent<LevelManager>().ActivateRoots(raizesAtivadosCheckpoint);
-
-        for (int i = 0; i < PedrasParaReset.Length; i++)
-        {
-            PedrasParaReset[i].transform.position = PedrasParaReset[i].GetComponent<Pedra>().PosicaoInicial;
-        }
+        return CorpoMonge;
     }
+
 }
