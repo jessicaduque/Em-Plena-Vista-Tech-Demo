@@ -119,9 +119,9 @@ public class ThirdPersonController : Utils.Singleton.Singleton<ThirdPersonContro
 
     private void DoInteractControl(InputAction.CallbackContext obj)
     {
-        Ray ray = new Ray(this.transform.position + Vector3.up * 2f, this.transform.forward * interactionDistance);
+        Ray ray = new Ray(this.transform.position + Vector3.up * 2f, this.transform.forward);
         Debug.DrawRay(this.transform.position + Vector3.up * 2f, this.transform.forward * interactionDistance, Color.red, 2);
-        if (Physics.Raycast(ray, out RaycastHit hit, 0.5f))
+        if (Physics.Raycast(ray, out RaycastHit hit, interactionDistance))
         {
             if (hit.transform.CompareTag("Stone"))
             {
