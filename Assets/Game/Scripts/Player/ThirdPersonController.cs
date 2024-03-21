@@ -1,8 +1,8 @@
-using System;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class ThirdPersonController : MonoBehaviour
+public class ThirdPersonController : Utils.Singleton.Singleton<ThirdPersonController>
 {
     // Input fields
     private ThirdPersonActionsAsset playerActionsAsset;
@@ -12,19 +12,20 @@ public class ThirdPersonController : MonoBehaviour
     private Rigidbody rb;
     [SerializeField] private float movementForce = 1f;
     [SerializeField] private float maxWalkSpeed = 4f;
-    [SerializeField] private float maxRunSpeed = 8f;
+    public float maxRunSpeed = 8f;
     private float maxFinalSpeed = 4f;
     [SerializeField] private Vector3 forceDirection = Vector3.zero;
-    private bool finishingRun;
 
     // Puzzle fields
     [SerializeField] private float pushStoneTime = 2f;
+    [SerializeField] private float interactionDistance = 1f;
 
     [SerializeField] private Camera playerCamera;
 
     private Player _player;
+    private StonePuzzleManager _stonePuzzleManager => StonePuzzleManager.I;
 
-    private void Awake()
+    private new void Awake()
     {
         rb = this.GetComponent<Rigidbody>();
         playerActionsAsset = new ThirdPersonActionsAsset();
@@ -64,14 +65,9 @@ public class ThirdPersonController : MonoBehaviour
 
         Vector3 horizontalVelocity = rb.velocity;
         horizontalVelocity.y = 0;
+
         if (horizontalVelocity.sqrMagnitude > maxFinalSpeed * maxFinalSpeed)
         {
-            if (finishingRun)
-            {
-                rb.velocity -= 0.25f * Time.fixedDeltaTime * Vector3.up;
-                if (rb.velocity.sqrMagnitude < maxWalkSpeed * maxWalkSpeed)
-                    finishingRun = false;
-            }
             rb.velocity = horizontalVelocity.normalized * maxFinalSpeed + Vector3.up * rb.velocity.y;
         }
 
@@ -111,13 +107,11 @@ public class ThirdPersonController : MonoBehaviour
     private void StartRun(InputAction.CallbackContext obj)
     {
         maxFinalSpeed = maxRunSpeed;
-        finishingRun = false;
     }
 
     private void EndRun(InputAction.CallbackContext obj)
     {
         maxFinalSpeed = maxWalkSpeed;
-        finishingRun = true;
     }
 
     #endregion
@@ -125,15 +119,18 @@ public class ThirdPersonController : MonoBehaviour
 
     private void DoInteractControl(InputAction.CallbackContext obj)
     {
-        Ray ray = new Ray(this.transform.position + Vector3.right * 0.25f, Vector3.right);
+        Ray ray = new Ray(this.transform.position + Vector3.up * 2f, this.transform.forward * interactionDistance);
+        Debug.DrawRay(this.transform.position + Vector3.up * 2f, this.transform.forward * interactionDistance, Color.red, 2);
         if (Physics.Raycast(ray, out RaycastHit hit, 0.5f))
         {
             if (hit.transform.CompareTag("Stone"))
             {
+                Debug.Log("Stone hit");
                 // Script to get stone and push
             }
             else if (hit.transform.CompareTag("Canalizer"))
             {
+                Debug.Log("Canalizer hit");
                 // Script to get canalizer and canalize
             }
         }
@@ -145,7 +142,7 @@ public class ThirdPersonController : MonoBehaviour
     {
         if (IsInPuzzle())
         {
-            // Script to reset puzzle
+            _stonePuzzleManager.ResetStonePuzzle();
         }
     }
 

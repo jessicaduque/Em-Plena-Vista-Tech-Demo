@@ -245,36 +245,22 @@ public class Personagem : MonoBehaviour
     {
         if (colidiu.gameObject.tag == "Checkpoint")
         {
-            if (colidiu.gameObject.GetComponent<Checkpoint>().UltimoCheck)
-            {
-                infoCheckpoint[0] = new Vector3(0, 0, 0);
-                infoCheckpoint[1] = new Vector3(0, 0, 0);
-                Destroy(colidiu.gameObject);
+            Debug.Log("Checkpoint antigo !");
+            //if (colidiu.gameObject.GetComponent<Checkpoint>().UltimoCheck)
+            //{
+            //    infoCheckpoint[0] = new Vector3(0, 0, 0);
+            //    infoCheckpoint[1] = new Vector3(0, 0, 0);
+            //    Destroy(colidiu.gameObject);
 
-            }
-            else
-            {
-                infoCheckpoint[0] = new Vector3(colidiu.gameObject.transform.position.x, transform.position.y, colidiu.gameObject.transform.position.z);
-                infoCheckpoint[1] = colidiu.gameObject.transform.eulerAngles;
-                PedrasParaReset = colidiu.gameObject.GetComponent<Checkpoint>().pedrasParaResetar;
-                raizesAtivadosCheckpoint = GameObject.FindGameObjectWithTag("GameController").GetComponent<GerenciadorFase>().GetRaizesAtivados();
-                Destroy(colidiu.gameObject);
-            }
-        }
-
-        if(colidiu.gameObject.tag == "PuzzleRuinas")
-        {
-            pisandoEmRuinas = true;
-            estaNoChao = true;
-        }
-
-    }
-
-    private void OnTriggerExit(Collider colidiu)
-    {
-        if (colidiu.gameObject.tag == "PuzzleRuinas")
-        {
-            pisandoEmRuinas = false;
+            //}
+            //else
+            //{
+            //    infoCheckpoint[0] = new Vector3(colidiu.gameObject.transform.position.x, transform.position.y, colidiu.gameObject.transform.position.z);
+            //    infoCheckpoint[1] = colidiu.gameObject.transform.eulerAngles;
+            //    PedrasParaReset = colidiu.gameObject.GetComponent<Checkpoint>().pedrasParaResetar;
+            //    raizesAtivadosCheckpoint = GameObject.FindGameObjectWithTag("GameController").GetComponent<GerenciadorFase>().GetRaizesAtivados();
+            //    Destroy(colidiu.gameObject);
+            //}
         }
     }
 

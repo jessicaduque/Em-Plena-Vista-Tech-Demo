@@ -6,5 +6,19 @@ using Utils.Singleton;
 public class Player : Singleton<Player>
 {
     // Puzzle variables
-    public bool isInPuzzle {get; private set; }
+    public bool isInPuzzle { get; private set; }
+
+    private new void Awake()
+    {
+
+    }
+
+    #region SET
+
+    public void SetIsInPuzzle(bool isInPuzzle)
+    {
+        this.isInPuzzle = isInPuzzle;
+    }
+
+    #endregion
 }
