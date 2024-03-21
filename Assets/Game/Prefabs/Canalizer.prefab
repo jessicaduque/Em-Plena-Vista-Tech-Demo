@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 927352537296793523}
   - component: {fileID: 927352537296793535}
   m_Layer: 0
-  m_Name: Canalizador
+  m_Name: Canalizer
   m_TagString: Canalizador
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

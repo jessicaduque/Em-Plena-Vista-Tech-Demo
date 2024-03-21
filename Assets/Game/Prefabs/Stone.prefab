@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 1505290543}
   - component: {fileID: 759154016486676523}
   m_Layer: 0
-  m_Name: PedraLeve
+  m_Name: Stone
   m_TagString: PedraLeve
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
