@@ -9,8 +9,6 @@ TagManager:
   - GameOver
   - Stone
   - Root
-  - Pilar
-  - PedraLeve
   - Canalizer
   layers:
   - Default

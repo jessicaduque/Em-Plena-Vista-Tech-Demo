@@ -11,4 +11,9 @@ public class Root : MonoBehaviour
             this.gameObject.SetActive(false);
         }
     }
+
+    public bool GetIsRoot1()
+    {
+        return isRoot1;
+    }
 }
