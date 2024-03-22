@@ -20,10 +20,16 @@ public class StonePuzzleManager : Singleton<StonePuzzleManager>
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
 
+        roots1 = new List<GameObject>();
+        roots2 = new List<GameObject>();
+    }
+
+    private void Start()
+    {
         GameObject[] roots = GameObject.FindGameObjectsWithTag("Root");
-        for (int i=0; i < roots.Length; i++)
+        for (int i = 0; i < roots.Length; i++)
         {
-            if (roots[i].GetComponent<Root>().GetIsRoot1()) 
+            if (roots[i].GetComponent<Root>().GetIsRoot1())
             {
                 roots1.Add(roots[i]);
                 roots1Amount++;

@@ -33,7 +33,7 @@ public class BlackScreenController : Singleton<BlackScreenController>
     {
         blackScreen_Panel.SetActive(true);
         blackScreen_CanvasGroup.alpha = 1f;
-        blackScreen_CanvasGroup.DOFade(0, tempoFadePreto).onComplete = () => TelaPretaPanel.SetActive(false);
+        blackScreen_CanvasGroup.DOFade(0, tempoFadePreto).onComplete = () => blackScreen_Panel.SetActive(false);
     }
 
     public void FadeOutScene(string nomeScene)

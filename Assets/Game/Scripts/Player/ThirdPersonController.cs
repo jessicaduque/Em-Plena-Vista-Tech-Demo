@@ -1,3 +1,4 @@
+using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -71,12 +72,12 @@ public class ThirdPersonController : Utils.Singleton.Singleton<ThirdPersonContro
             rb.velocity = horizontalVelocity.normalized * maxFinalSpeed + Vector3.up * rb.velocity.y;
         }
 
-        LookAt();
+        LookAtWithCamera();
     }
 
     #region Camera
 
-    private void LookAt()
+    private void LookAtWithCamera()
     {
         Vector3 direction = rb.velocity;
         direction.y = 0;
@@ -123,14 +124,17 @@ public class ThirdPersonController : Utils.Singleton.Singleton<ThirdPersonContro
         Debug.DrawRay(this.transform.position + Vector3.up * 2f, this.transform.forward * interactionDistance, Color.red, 2);
         if (Physics.Raycast(ray, out RaycastHit hit, interactionDistance))
         {
+            Transform objTransform = hit.transform;
             if (hit.transform.CompareTag("Stone"))
             {
                 Debug.Log("Stone hit");
+                StartCoroutine(_player.LookAtObject(objTransform));
                 // Script to get stone and push
             }
             else if (hit.transform.CompareTag("Canalizer"))
             {
                 Debug.Log("Canalizer hit");
+                StartCoroutine(_player.LookAtObject(objTransform));
                 // Script to get canalizer and canalize
             }
         }
