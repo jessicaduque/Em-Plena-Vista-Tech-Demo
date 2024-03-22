@@ -16,10 +16,12 @@ public class ThirdPersonController : Utils.Singleton.Singleton<ThirdPersonContro
     public float maxRunSpeed = 8f;
     private float maxFinalSpeed = 4f;
     [SerializeField] private Vector3 forceDirection = Vector3.zero;
+    [SerializeField] private float lookAtSpeed = 10f;
 
     // Puzzle fields
     [SerializeField] private float pushStoneTime = 2f;
     [SerializeField] private float interactionDistance = 1f;
+    [SerializeField] private LayerMask interactionLayer;
 
     [SerializeField] private Camera playerCamera;
 
@@ -34,23 +36,12 @@ public class ThirdPersonController : Utils.Singleton.Singleton<ThirdPersonContro
 
     private void OnEnable()
     {
-        playerActionsAsset.Player.ResetPuzzle.started += DoResetPuzzle;
-        playerActionsAsset.Player.Interact.started += DoInteractControl;
-        playerActionsAsset.Player.Run.started += StartRun;
-        playerActionsAsset.Player.Run.canceled += EndRun;
-
-        move = playerActionsAsset.Player.Move;
-        playerActionsAsset.Player.Enable();
+        EnableInputs();
     }
 
     private void OnDisable()
     {
-        playerActionsAsset.Player.ResetPuzzle.started -= DoResetPuzzle;
-        playerActionsAsset.Player.Interact.started -= DoInteractControl;
-        playerActionsAsset.Player.Run.started -= StartRun;
-        playerActionsAsset.Player.Run.canceled -= EndRun;
-
-        playerActionsAsset.Player.Disable();
+        DisableInputs();
     }
 
     private void FixedUpdate()
@@ -74,6 +65,31 @@ public class ThirdPersonController : Utils.Singleton.Singleton<ThirdPersonContro
 
         LookAtWithCamera();
     }
+
+    #region Input
+
+    private void EnableInputs()
+    {
+        playerActionsAsset.Player.ResetPuzzle.started += DoResetPuzzle;
+        playerActionsAsset.Player.Interact.started += DoInteractControl;
+        playerActionsAsset.Player.Run.started += StartRun;
+        playerActionsAsset.Player.Run.canceled += EndRun;
+
+        move = playerActionsAsset.Player.Move;
+        playerActionsAsset.Player.Enable();
+    }
+
+    private void DisableInputs()
+    {
+        playerActionsAsset.Player.ResetPuzzle.started -= DoResetPuzzle;
+        playerActionsAsset.Player.Interact.started -= DoInteractControl;
+        playerActionsAsset.Player.Run.started -= StartRun;
+        playerActionsAsset.Player.Run.canceled -= EndRun;
+
+        playerActionsAsset.Player.Disable();
+    }
+
+    #endregion
 
     #region Camera
 
@@ -115,6 +131,28 @@ public class ThirdPersonController : Utils.Singleton.Singleton<ThirdPersonContro
         maxFinalSpeed = maxWalkSpeed;
     }
 
+    public IEnumerator LookAtObject(Transform obj)
+    {
+        DisableInputs();
+
+        Vector3 relativePos = obj.transform.position - transform.position;
+        relativePos.y = 0;
+
+        Quaternion rot = Quaternion.LookRotation(relativePos, Vector3.up);
+
+        var deltaAngle = Quaternion.Angle(this.rb.rotation, rot);
+
+        while (deltaAngle != 0)
+        {
+            deltaAngle = Quaternion.Angle(this.rb.rotation, rot);
+            this.rb.rotation = Quaternion.Slerp(transform.rotation, rot, lookAtSpeed * Time.deltaTime);
+            yield return null;
+        }
+
+        EnableInputs();
+
+    }
+
     #endregion
 
 
@@ -122,19 +160,19 @@ public class ThirdPersonController : Utils.Singleton.Singleton<ThirdPersonContro
     {
         Ray ray = new Ray(this.transform.position + Vector3.up * 2f, this.transform.forward);
         Debug.DrawRay(this.transform.position + Vector3.up * 2f, this.transform.forward * interactionDistance, Color.red, 2);
-        if (Physics.Raycast(ray, out RaycastHit hit, interactionDistance))
+        if (Physics.Raycast(ray, out RaycastHit hit, interactionDistance, interactionLayer))
         {
             Transform objTransform = hit.transform;
             if (hit.transform.CompareTag("Stone"))
             {
                 Debug.Log("Stone hit");
-                StartCoroutine(_player.LookAtObject(objTransform));
+                StartCoroutine(LookAtObject(objTransform));
                 // Script to get stone and push
             }
             else if (hit.transform.CompareTag("Canalizer"))
             {
                 Debug.Log("Canalizer hit");
-                StartCoroutine(_player.LookAtObject(objTransform));
+                StartCoroutine(LookAtObject(objTransform));
                 // Script to get canalizer and canalize
             }
         }

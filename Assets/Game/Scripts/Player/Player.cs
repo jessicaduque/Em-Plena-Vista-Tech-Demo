@@ -17,23 +17,7 @@ public class Player : Singleton<Player>
         rb = this.GetComponent<Rigidbody>();
     }
 
-    public IEnumerator LookAtObject(Transform obj)
-    {
-        _thirdPlayerController.enabled = false;
-
-        Vector3 relativePos = obj.transform.position - transform.position;
-        relativePos.y = 0;
-
-        Quaternion rot = Quaternion.LookRotation(relativePos, Vector3.up);
-
-        while (this.rb.rotation != rot)
-        {
-            this.rb.rotation = Quaternion.Slerp(transform.rotation, rot, 0.4f * Time.deltaTime);
-            yield return null;
-        }
-
-        _thirdPlayerController.enabled = true;
-    }
+    
 
     #region SET
 

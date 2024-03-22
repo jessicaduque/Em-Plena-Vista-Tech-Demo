@@ -10,11 +10,12 @@ TagManager:
   - Stone
   - Root
   - Canalizer
+  - Parede
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Interaction
   - Water
   - UI
   - 
