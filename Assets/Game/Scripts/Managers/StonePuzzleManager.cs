@@ -5,10 +5,13 @@ using System.Collections.Generic;
 public class StonePuzzleManager : Singleton<StonePuzzleManager>
 {
     private Checkpoint lastCheckpointScript;
-    private int initialRoots = 1;
-    private int activeRoots;
-    private List<GameObject> Roots1;
-    private List<GameObject> Roots2;
+    private bool roots1Active = true;
+
+    private List<GameObject> roots1;
+    private List<GameObject> roots2;
+
+    private int roots1Amount = 0;
+    private int roots2Amount = 0;
     private ThirdPersonController _thirdPlayerController => ThirdPersonController.I;
 
     private new void Awake()
@@ -16,12 +19,19 @@ public class StonePuzzleManager : Singleton<StonePuzzleManager>
         GameObject[] roots = GameObject.FindGameObjectsWithTag("Root");
         for (int i=0; i < roots.Length; i++)
         {
-            if (roots[i].GetComponent<Root>().GetIsRoot1())
-                Roots1.Add(roots[i]);
+            if (roots[i].GetComponent<Root>().GetIsRoot1()) 
+            {
+                roots1.Add(roots[i]);
+                roots1Amount++;
+            }
             else
-                Roots2.Add(roots[i]);
+            {
+                roots2.Add(roots[i]);
+                roots2Amount++;
+            }
         }
-        
+
+        ActivateRoots(roots1Active);
     }
 
     public void ResetStonePuzzle()
@@ -36,6 +46,28 @@ public class StonePuzzleManager : Singleton<StonePuzzleManager>
             }
         }
     }
+
+    #region Roots
+
+    public void ActivateRoots(bool activateRoots1)
+    {
+        for (int i = 0; i < roots1Amount; i++)
+        {
+            roots1[i].SetActive(activateRoots1);
+        }
+
+        for (int i = 0; i < roots2Amount; i++)
+        {
+            roots2[i].SetActive(!activateRoots1);
+        }
+    }
+
+    public void SwitchActiveRoots()
+    {
+        roots1Active = !roots1Active;
+    }
+
+    #endregion
 
     #region SET
 
