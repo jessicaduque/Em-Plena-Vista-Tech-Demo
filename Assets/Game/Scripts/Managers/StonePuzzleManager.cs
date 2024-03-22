@@ -16,6 +16,10 @@ public class StonePuzzleManager : Singleton<StonePuzzleManager>
 
     private new void Awake()
     {
+        // TEMPORARY
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
+
         GameObject[] roots = GameObject.FindGameObjectsWithTag("Root");
         for (int i=0; i < roots.Length; i++)
         {

@@ -7,6 +7,8 @@ public class GameController : Singleton<GameController>
 {
     protected override void Awake()
     {
+        base.Awake();
+
         LockMouse(false);
     }
 
