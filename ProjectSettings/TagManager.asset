@@ -5,15 +5,13 @@ TagManager:
   serializedVersion: 2
   tags:
   - Chao
-  - Parede
   - Checkpoint
-  - Raiz1
-  - Raiz2
-  - Canalizador
-  - PuzzleRuinas
   - GameOver
   - Stone
   - Root
+  - Pilar
+  - PedraLeve
+  - Canalizer
   layers:
   - Default
   - TransparentFX

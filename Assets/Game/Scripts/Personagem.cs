@@ -569,13 +569,5 @@ public class Personagem : MonoBehaviour
         movimentoPermitido = true;
     }
 
-    public void TerminarResetPuzzle()
-    {
-        GameObject.FindGameObjectWithTag("GameController").GetComponent<GerenciadorFase>().AtivacaoRaizes(raizesAtivadosCheckpoint);
-
-        for (int i = 0; i < PedrasParaReset.Length; i++)
-        {
-            PedrasParaReset[i].transform.position = PedrasParaReset[i].GetComponent<Pedra>().PosicaoInicial;
-        }
-    }
+    
 }

@@ -42,7 +42,7 @@ public class TelaPretaFade : MonoBehaviour
                     {
                         CorpoMonge.transform.eulerAngles = ondeOlharPlayer;
                         Player.transform.eulerAngles = CorpoMonge.transform.eulerAngles;
-                        Player.GetComponent<Personagem>().TerminarResetPuzzle();
+                        //Player.GetComponent<Personagem>().TerminarResetPuzzle();
                     }
                     else
                     {
