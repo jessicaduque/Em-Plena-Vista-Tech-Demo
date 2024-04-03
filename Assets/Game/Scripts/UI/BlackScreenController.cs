@@ -42,6 +42,12 @@ public class BlackScreenController : Singleton<BlackScreenController>
         _blackScreen_CanvasGroup.DOFade(1, _blackFadeTime).OnComplete(() => SceneManager.LoadScene(nomeScene)).SetUpdate(true);
     }
 
+    public void RestartGame()
+    {
+        _blackScreen_Panel.SetActive(true);
+        _blackScreen_CanvasGroup.DOFade(1, _blackFadeTime).OnComplete(() => SceneManager.LoadScene("Main")).SetUpdate(true);
+    }
+
     #endregion
 
     #region Fades with panels
@@ -55,11 +61,18 @@ public class BlackScreenController : Singleton<BlackScreenController>
     }
     #endregion
 
-    #region Fades with scenes
-    public void RestartGame()
+    #region Fades with cameras
+    
+    public void CameraChangeFade(GameObject cameraOff, GameObject cameraOn)
     {
         _blackScreen_Panel.SetActive(true);
-        _blackScreen_CanvasGroup.DOFade(1, _blackFadeTime).OnComplete(() => SceneManager.LoadScene("Main")).SetUpdate(true);
+        _blackScreen_CanvasGroup.DOFade(1, _blackFadeTime).OnComplete(() =>
+        {
+            cameraOff.SetActive(false);
+            cameraOn.SetActive(true);
+            _blackScreen_CanvasGroup.DOFade(0, _blackFadeTime).OnComplete(() => _blackScreen_Panel.SetActive(false));
+        });
+        
     }
 
     #endregion

@@ -1,18 +1,21 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.UI;
+using Utils.Singleton;
 
-public class UIManager : MonoBehaviour
+public class UIManager : Singleton<UIManager>
 {
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField] private Image _interactionButtonImage;
+    [SerializeField] private Sprite _interactionButtonGamepad;
+    [SerializeField] private Sprite _interactionButtonKeyboardMouse;
+
+    private new void Awake()
     {
-        
+        _interactionButtonImage.sprite = (Gamepad.all.Count > 0 ? _interactionButtonGamepad : _interactionButtonKeyboardMouse);
     }
 
-    // Update is called once per frame
-    void Update()
+    public void ControlInteractionButton(bool state)
     {
-        
+        _interactionButtonImage.enabled = state;
     }
 }

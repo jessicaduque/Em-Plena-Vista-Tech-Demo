@@ -9,8 +9,6 @@ public class ThirdPersonController : Utils.Singleton.Singleton<ThirdPersonContro
     private ThirdPersonActionsAsset _playerActionsAsset;
     private InputAction _move;
 
-    
-
     // Movement fields
     private Rigidbody _rb;
     public float maxRunSpeed = 8f;
@@ -24,7 +22,8 @@ public class ThirdPersonController : Utils.Singleton.Singleton<ThirdPersonContro
     private Interactor _interactor;
     [SerializeField] private float _pushStoneTime = 2f;
 
-    [SerializeField] private Camera _playerCamera;
+    [SerializeField] private Camera _playerMainCamera;
+    [SerializeField] private bool _puzzleCameraMovement;
 
     private Player _player;
     private StonePuzzleManager _stonePuzzleManager => StonePuzzleManager.I;
@@ -48,8 +47,8 @@ public class ThirdPersonController : Utils.Singleton.Singleton<ThirdPersonContro
 
     private void FixedUpdate()
     {
-        _forceDirection += _move.ReadValue<Vector2>().x * GetCameraRight(_playerCamera) * _movementForce;
-        _forceDirection += _move.ReadValue<Vector2>().y * GetCameraForward(_playerCamera) * _movementForce;
+        _forceDirection += _move.ReadValue<Vector2>().x * GetCameraRight(_playerMainCamera) * _movementForce;
+        _forceDirection += _move.ReadValue<Vector2>().y * GetCameraForward(_playerMainCamera) * _movementForce;
 
         _rb.AddForce(_forceDirection, ForceMode.Impulse);
         _forceDirection = Vector3.zero;
