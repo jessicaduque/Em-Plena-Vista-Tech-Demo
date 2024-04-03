@@ -6,32 +6,34 @@ using UnityEngine.InputSystem;
 public class ThirdPersonController : Utils.Singleton.Singleton<ThirdPersonController>
 {
     // Input fields
-    private ThirdPersonActionsAsset playerActionsAsset;
-    private InputAction move;
+    private ThirdPersonActionsAsset _playerActionsAsset;
+    private InputAction _move;
+
+    
 
     // Movement fields
-    private Rigidbody rb;
-    [SerializeField] private float movementForce = 1f;
-    [SerializeField] private float maxWalkSpeed = 4f;
+    private Rigidbody _rb;
     public float maxRunSpeed = 8f;
-    private float maxFinalSpeed = 4f;
-    [SerializeField] private Vector3 forceDirection = Vector3.zero;
-    [SerializeField] private float lookAtSpeed = 10f;
+    private float _maxFinalSpeed = 4f;
+    [SerializeField] private float _movementForce = 1f;
+    [SerializeField] private float _maxWalkSpeed = 4f;
+    [SerializeField] private Vector3 _forceDirection = Vector3.zero;
+    [SerializeField] private float _lookAtSpeed = 10f;
 
     // Puzzle fields
-    [SerializeField] private float pushStoneTime = 2f;
-    [SerializeField] private float interactionDistance = 1f;
-    [SerializeField] private LayerMask interactionLayer;
+    private Interactor _interactor;
+    [SerializeField] private float _pushStoneTime = 2f;
 
-    [SerializeField] private Camera playerCamera;
+    [SerializeField] private Camera _playerCamera;
 
     private Player _player;
     private StonePuzzleManager _stonePuzzleManager => StonePuzzleManager.I;
 
     private new void Awake()
     {
-        rb = this.GetComponent<Rigidbody>();
-        playerActionsAsset = new ThirdPersonActionsAsset();
+        _rb = this.GetComponent<Rigidbody>();
+        _interactor = this.GetComponent<Interactor>();
+        _playerActionsAsset = new ThirdPersonActionsAsset();
     }
 
     private void OnEnable()
@@ -46,21 +48,21 @@ public class ThirdPersonController : Utils.Singleton.Singleton<ThirdPersonContro
 
     private void FixedUpdate()
     {
-        forceDirection += move.ReadValue<Vector2>().x * GetCameraRight(playerCamera) * movementForce;
-        forceDirection += move.ReadValue<Vector2>().y * GetCameraForward(playerCamera) * movementForce;
+        _forceDirection += _move.ReadValue<Vector2>().x * GetCameraRight(_playerCamera) * _movementForce;
+        _forceDirection += _move.ReadValue<Vector2>().y * GetCameraForward(_playerCamera) * _movementForce;
 
-        rb.AddForce(forceDirection, ForceMode.Impulse);
-        forceDirection = Vector3.zero;
+        _rb.AddForce(_forceDirection, ForceMode.Impulse);
+        _forceDirection = Vector3.zero;
 
-        if (rb.velocity.y < 0f)
-            rb.velocity -= Vector3.down * Physics.gravity.y * Time.fixedDeltaTime;
+        if (_rb.velocity.y < 0f)
+            _rb.velocity -= Vector3.down * Physics.gravity.y * Time.fixedDeltaTime;
 
-        Vector3 horizontalVelocity = rb.velocity;
+        Vector3 horizontalVelocity = _rb.velocity;
         horizontalVelocity.y = 0;
 
-        if (horizontalVelocity.sqrMagnitude > maxFinalSpeed * maxFinalSpeed)
+        if (horizontalVelocity.sqrMagnitude > _maxFinalSpeed * _maxFinalSpeed)
         {
-            rb.velocity = horizontalVelocity.normalized * maxFinalSpeed + Vector3.up * rb.velocity.y;
+            _rb.velocity = horizontalVelocity.normalized * _maxFinalSpeed + Vector3.up * _rb.velocity.y;
         }
 
         LookAtWithCamera();
@@ -70,23 +72,23 @@ public class ThirdPersonController : Utils.Singleton.Singleton<ThirdPersonContro
 
     private void EnableInputs()
     {
-        playerActionsAsset.Player.ResetPuzzle.started += DoResetPuzzle;
-        playerActionsAsset.Player.Interact.started += DoInteractControl;
-        playerActionsAsset.Player.Run.started += StartRun;
-        playerActionsAsset.Player.Run.canceled += EndRun;
+        _playerActionsAsset.Player.ResetPuzzle.started += DoResetPuzzle;
+        _playerActionsAsset.Player.Interact.started += DoInteractControl;
+        _playerActionsAsset.Player.Run.started += StartRun;
+        _playerActionsAsset.Player.Run.canceled += EndRun;
 
-        move = playerActionsAsset.Player.Move;
-        playerActionsAsset.Player.Enable();
+        _move = _playerActionsAsset.Player.Move;
+        _playerActionsAsset.Player.Enable();
     }
 
     private void DisableInputs()
     {
-        playerActionsAsset.Player.ResetPuzzle.started -= DoResetPuzzle;
-        playerActionsAsset.Player.Interact.started -= DoInteractControl;
-        playerActionsAsset.Player.Run.started -= StartRun;
-        playerActionsAsset.Player.Run.canceled -= EndRun;
+        _playerActionsAsset.Player.ResetPuzzle.started -= DoResetPuzzle;
+        _playerActionsAsset.Player.Interact.started -= DoInteractControl;
+        _playerActionsAsset.Player.Run.started -= StartRun;
+        _playerActionsAsset.Player.Run.canceled -= EndRun;
 
-        playerActionsAsset.Player.Disable();
+        _playerActionsAsset.Player.Disable();
     }
 
     #endregion
@@ -95,13 +97,13 @@ public class ThirdPersonController : Utils.Singleton.Singleton<ThirdPersonContro
 
     private void LookAtWithCamera()
     {
-        Vector3 direction = rb.velocity;
+        Vector3 direction = _rb.velocity;
         direction.y = 0;
 
-        if (move.ReadValue<Vector2>().sqrMagnitude > 0.1f && direction.sqrMagnitude > 0.1f)
-            this.rb.rotation = Quaternion.LookRotation(direction, Vector3.up);
+        if (_move.ReadValue<Vector2>().sqrMagnitude > 0.1f && direction.sqrMagnitude > 0.1f)
+            this._rb.rotation = Quaternion.LookRotation(direction, Vector3.up);
         else
-            rb.angularVelocity = Vector3.zero;
+            _rb.angularVelocity = Vector3.zero;
     }
 
     private Vector3 GetCameraForward(Camera playerCamera)
@@ -123,12 +125,12 @@ public class ThirdPersonController : Utils.Singleton.Singleton<ThirdPersonContro
 
     private void StartRun(InputAction.CallbackContext obj)
     {
-        maxFinalSpeed = maxRunSpeed;
+        _maxFinalSpeed = maxRunSpeed;
     }
 
     private void EndRun(InputAction.CallbackContext obj)
     {
-        maxFinalSpeed = maxWalkSpeed;
+        _maxFinalSpeed = _maxWalkSpeed;
     }
 
     public IEnumerator LookAtObject(Transform obj)
@@ -140,12 +142,12 @@ public class ThirdPersonController : Utils.Singleton.Singleton<ThirdPersonContro
 
         Quaternion rot = Quaternion.LookRotation(relativePos, Vector3.up);
 
-        var deltaAngle = Quaternion.Angle(this.rb.rotation, rot);
+        var deltaAngle = Quaternion.Angle(this._rb.rotation, rot);
 
         while (deltaAngle != 0)
         {
-            deltaAngle = Quaternion.Angle(this.rb.rotation, rot);
-            this.rb.rotation = Quaternion.Slerp(transform.rotation, rot, lookAtSpeed * Time.deltaTime);
+            deltaAngle = Quaternion.Angle(this._rb.rotation, rot);
+            this._rb.rotation = Quaternion.Slerp(transform.rotation, rot, _lookAtSpeed * Time.deltaTime);
             yield return null;
         }
 
@@ -158,24 +160,7 @@ public class ThirdPersonController : Utils.Singleton.Singleton<ThirdPersonContro
 
     private void DoInteractControl(InputAction.CallbackContext obj)
     {
-        Ray ray = new Ray(this.transform.position + Vector3.up * 2f, this.transform.forward);
-        Debug.DrawRay(this.transform.position + Vector3.up * 2f, this.transform.forward * interactionDistance, Color.red, 2);
-        if (Physics.Raycast(ray, out RaycastHit hit, interactionDistance, interactionLayer))
-        {
-            Transform objTransform = hit.transform;
-            if (hit.transform.CompareTag("Stone"))
-            {
-                Debug.Log("Stone hit");
-                StartCoroutine(LookAtObject(objTransform));
-                // Script to get stone and push
-            }
-            else if (hit.transform.CompareTag("Canalizer"))
-            {
-                Debug.Log("Canalizer hit");
-                StartCoroutine(LookAtObject(objTransform));
-                // Script to get canalizer and canalize
-            }
-        }
+        _interactor.InteractControl();
     }
 
     #region Puzzle

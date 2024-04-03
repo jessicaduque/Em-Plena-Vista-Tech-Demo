@@ -5,9 +5,9 @@ using UnityEngine.SceneManagement;
 
 public class BlackScreenController : Singleton<BlackScreenController>
 {
-    [SerializeField] public GameObject blackScreen_Panel;
-    [SerializeField] public CanvasGroup blackScreen_CanvasGroup;
-    private float tempoFadePreto => Helpers.tempoPretoFade;
+    [SerializeField] private GameObject _blackScreen_Panel;
+    [SerializeField] private CanvasGroup _blackScreen_CanvasGroup;
+    private float _blackFadeTime => Helpers.blackFadeTime;
 
     protected override void Awake()
     {
@@ -31,15 +31,15 @@ public class BlackScreenController : Singleton<BlackScreenController>
     #region Fades with scenes
     public void FadeInSceneStart()
     {
-        blackScreen_Panel.SetActive(true);
-        blackScreen_CanvasGroup.alpha = 1f;
-        blackScreen_CanvasGroup.DOFade(0, tempoFadePreto).onComplete = () => blackScreen_Panel.SetActive(false);
+        _blackScreen_Panel.SetActive(true);
+        _blackScreen_CanvasGroup.alpha = 1f;
+        _blackScreen_CanvasGroup.DOFade(0, _blackFadeTime).onComplete = () => _blackScreen_Panel.SetActive(false);
     }
 
     public void FadeOutScene(string nomeScene)
     {
-        blackScreen_Panel.SetActive(true);
-        blackScreen_CanvasGroup.DOFade(1, tempoFadePreto).OnComplete(() => SceneManager.LoadScene(nomeScene)).SetUpdate(true);
+        _blackScreen_Panel.SetActive(true);
+        _blackScreen_CanvasGroup.DOFade(1, _blackFadeTime).OnComplete(() => SceneManager.LoadScene(nomeScene)).SetUpdate(true);
     }
 
     #endregion
@@ -47,8 +47,8 @@ public class BlackScreenController : Singleton<BlackScreenController>
     #region Fades with panels
     public void FadePanel(GameObject panel, bool estado)
     {
-        blackScreen_Panel.SetActive(true);
-        blackScreen_CanvasGroup.DOFade(1, tempoFadePreto).onComplete = () => {
+        _blackScreen_Panel.SetActive(true);
+        _blackScreen_CanvasGroup.DOFade(1, _blackFadeTime).onComplete = () => {
             panel.SetActive(estado);
             FadeInSceneStart();
         };
@@ -58,8 +58,8 @@ public class BlackScreenController : Singleton<BlackScreenController>
     #region Fades with scenes
     public void RestartGame()
     {
-        blackScreen_Panel.SetActive(true);
-        blackScreen_CanvasGroup.DOFade(1, tempoFadePreto).OnComplete(() => SceneManager.LoadScene("Main")).SetUpdate(true);
+        _blackScreen_Panel.SetActive(true);
+        _blackScreen_CanvasGroup.DOFade(1, _blackFadeTime).OnComplete(() => SceneManager.LoadScene("Main")).SetUpdate(true);
     }
 
     #endregion

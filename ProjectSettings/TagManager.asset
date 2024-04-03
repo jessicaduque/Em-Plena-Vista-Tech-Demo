@@ -4,18 +4,16 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - Chao
   - Checkpoint
   - GameOver
   - Stone
   - Root
   - Canalizer
-  - Parede
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - Interaction
+  - Interactable
   - Water
   - UI
   - 

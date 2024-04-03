@@ -2,17 +2,26 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Stone : MonoBehaviour
+public class Stone : MonoBehaviour, IInteractable
 {
-    private Vector3 initialPosition;
+    private Vector3 _initialPosition;
+
+    [SerializeField] private string _prompt;
+    public string InteractionPrompt => _prompt;
 
     void Awake()
     {
-        initialPosition = transform.position;
+        _initialPosition = transform.position;
     }
 
     public void ResetPosition()
     {
-        transform.position = initialPosition;
+        transform.position = _initialPosition;
+    }
+
+    public bool Interact(Interactor interactor)
+    {
+        Debug.Log("Stone push");
+        return true;
     }
 }

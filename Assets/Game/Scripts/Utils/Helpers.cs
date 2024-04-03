@@ -3,27 +3,27 @@ using DG.Tweening;
 
 public static class Helpers
 {
-    public const float tempoPretoFade = 0.4f;
-    public const float tempoPanelFade = 0.3f;
+    public const float blackFadeTime = 0.4f;
+    public const float panelFadeTime = 0.3f;
     public static Transform cam => Camera.main.transform;
 
     public static void FadeInPanel(GameObject panel)
     {
         panel.SetActive(true);
-        panel.GetComponent<CanvasGroup>().DOFade(1, tempoPanelFade).SetUpdate(true);
+        panel.GetComponent<CanvasGroup>().DOFade(1, panelFadeTime).SetUpdate(true);
     }
 
     public static void FadeOutPanel(GameObject panel)
     {
-        panel.GetComponent<CanvasGroup>().DOFade(0, tempoPanelFade).OnComplete(() => panel.SetActive(false)).SetUpdate(true);
+        panel.GetComponent<CanvasGroup>().DOFade(0, panelFadeTime).OnComplete(() => panel.SetActive(false)).SetUpdate(true);
     }
 
-    public static void FadeCrossPanel(GameObject panelDesligar, GameObject panelLigar)
+    public static void FadeCrossPanel(GameObject offPanel, GameObject onPanel)
     {
-        panelDesligar.GetComponent<CanvasGroup>().DOFade(0, tempoPanelFade).OnComplete(() => {
-            panelDesligar.SetActive(false);
-            panelLigar.SetActive(true);
-            panelLigar.GetComponent<CanvasGroup>().DOFade(1, tempoPanelFade);
+        offPanel.GetComponent<CanvasGroup>().DOFade(0, panelFadeTime).OnComplete(() => {
+            offPanel.SetActive(false);
+            onPanel.SetActive(true);
+            onPanel.GetComponent<CanvasGroup>().DOFade(1, panelFadeTime);
         });
     }
 }
