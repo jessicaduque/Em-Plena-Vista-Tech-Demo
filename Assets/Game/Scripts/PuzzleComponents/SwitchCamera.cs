@@ -19,9 +19,8 @@ public class SwitchCamera : MonoBehaviour
             {
                 _blackScreenController.CameraChangeFade(_cameraToTurnOff, _cameraToTurnOn);
                 _thirdPersonController.SetPuzzleCameraMovement(!_turnOnMainCamera);
-            }
-            else
                 _uiManager.SetActiveCamera(_cameraToTurnOn);
+            }
         }
     }
 }

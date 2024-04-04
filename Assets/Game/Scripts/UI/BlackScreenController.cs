@@ -67,11 +67,16 @@ public class BlackScreenController : Singleton<BlackScreenController>
     public void CameraChangeFade(GameObject cameraOff, GameObject cameraOn)
     {
         _blackScreen_Panel.SetActive(true);
+        ThirdPersonController.I.DisableInputs();
         _blackScreen_CanvasGroup.DOFade(1, _blackCameraFadeTime).OnComplete(() =>
         {
             cameraOff.SetActive(false);
             cameraOn.SetActive(true);
-            _blackScreen_CanvasGroup.DOFade(0, _blackCameraFadeTime).OnComplete(() => _blackScreen_Panel.SetActive(false));
+            _blackScreen_CanvasGroup.DOFade(0, _blackCameraFadeTime).OnComplete(() => 
+            {
+                ThirdPersonController.I.EnableInputs();
+                _blackScreen_Panel.SetActive(false); 
+            });
         });
         
     }

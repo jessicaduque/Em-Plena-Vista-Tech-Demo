@@ -55,7 +55,7 @@ public class ThirdPersonController : Utils.Singleton.Singleton<ThirdPersonContro
 
     #region Input
 
-    private void EnableInputs()
+    public void EnableInputs()
     {
         _playerActionsAsset.Player.ResetPuzzle.started += DoResetPuzzle;
         _playerActionsAsset.Player.Interact.started += DoInteractControl;
@@ -66,7 +66,7 @@ public class ThirdPersonController : Utils.Singleton.Singleton<ThirdPersonContro
         _playerActionsAsset.Player.Enable();
     }
 
-    private void DisableInputs()
+    public void DisableInputs()
     {
         _playerActionsAsset.Player.ResetPuzzle.started -= DoResetPuzzle;
         _playerActionsAsset.Player.Interact.started -= DoInteractControl;
