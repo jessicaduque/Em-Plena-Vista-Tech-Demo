@@ -7,6 +7,7 @@ public class BlackScreenController : Singleton<BlackScreenController>
 {
     [SerializeField] private GameObject _blackScreen_Panel;
     [SerializeField] private CanvasGroup _blackScreen_CanvasGroup;
+    private float _blackCameraFadeTime = 0.2f;
     private float _blackFadeTime => Helpers.blackFadeTime;
 
     protected override void Awake()
@@ -66,11 +67,11 @@ public class BlackScreenController : Singleton<BlackScreenController>
     public void CameraChangeFade(GameObject cameraOff, GameObject cameraOn)
     {
         _blackScreen_Panel.SetActive(true);
-        _blackScreen_CanvasGroup.DOFade(1, _blackFadeTime).OnComplete(() =>
+        _blackScreen_CanvasGroup.DOFade(1, _blackCameraFadeTime).OnComplete(() =>
         {
             cameraOff.SetActive(false);
             cameraOn.SetActive(true);
-            _blackScreen_CanvasGroup.DOFade(0, _blackFadeTime).OnComplete(() => _blackScreen_Panel.SetActive(false));
+            _blackScreen_CanvasGroup.DOFade(0, _blackCameraFadeTime).OnComplete(() => _blackScreen_Panel.SetActive(false));
         });
         
     }

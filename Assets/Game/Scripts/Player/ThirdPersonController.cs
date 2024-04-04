@@ -47,24 +47,10 @@ public class ThirdPersonController : Utils.Singleton.Singleton<ThirdPersonContro
 
     private void FixedUpdate()
     {
-        _forceDirection += _move.ReadValue<Vector2>().x * GetCameraRight(_playerMainCamera) * _movementForce;
-        _forceDirection += _move.ReadValue<Vector2>().y * GetCameraForward(_playerMainCamera) * _movementForce;
-
-        _rb.AddForce(_forceDirection, ForceMode.Impulse);
-        _forceDirection = Vector3.zero;
-
-        if (_rb.velocity.y < 0f)
-            _rb.velocity -= Vector3.down * Physics.gravity.y * Time.fixedDeltaTime;
-
-        Vector3 horizontalVelocity = _rb.velocity;
-        horizontalVelocity.y = 0;
-
-        if (horizontalVelocity.sqrMagnitude > _maxFinalSpeed * _maxFinalSpeed)
-        {
-            _rb.velocity = horizontalVelocity.normalized * _maxFinalSpeed + Vector3.up * _rb.velocity.y;
-        }
-
-        LookAtWithCamera();
+        if (_puzzleCameraMovement)
+            PuzzleMovement();
+        else
+            MainMovement();
     }
 
     #region Input
@@ -122,6 +108,50 @@ public class ThirdPersonController : Utils.Singleton.Singleton<ThirdPersonContro
 
     #region Movement
 
+    private void MainMovement()
+    {
+        _forceDirection += _move.ReadValue<Vector2>().x * GetCameraRight(_playerMainCamera) * _movementForce;
+        _forceDirection += _move.ReadValue<Vector2>().y * GetCameraForward(_playerMainCamera) * _movementForce;
+
+        _rb.AddForce(_forceDirection, ForceMode.Impulse);
+        _forceDirection = Vector3.zero;
+
+        if (_rb.velocity.y < 0f)
+            _rb.velocity -= Vector3.down * Physics.gravity.y * Time.fixedDeltaTime;
+
+        Vector3 horizontalVelocity = _rb.velocity;
+        horizontalVelocity.y = 0;
+
+        if (horizontalVelocity.sqrMagnitude > _maxFinalSpeed * _maxFinalSpeed)
+        {
+            _rb.velocity = horizontalVelocity.normalized * _maxFinalSpeed + Vector3.up * _rb.velocity.y;
+        }
+
+        LookAtWithCamera();
+    }
+
+    private void PuzzleMovement() 
+    {
+        _forceDirection += _move.ReadValue<Vector2>().x * Vector3.left * _movementForce;
+        _forceDirection += _move.ReadValue<Vector2>().y * Vector3.back * _movementForce;
+
+        _rb.AddForce(_forceDirection, ForceMode.Impulse);
+        _forceDirection = Vector3.zero;
+
+        if (_rb.velocity.y < 0f)
+            _rb.velocity -= Vector3.down * Physics.gravity.y * Time.fixedDeltaTime;
+
+        Vector3 horizontalVelocity = _rb.velocity;
+        horizontalVelocity.y = 0;
+
+        if (horizontalVelocity.sqrMagnitude > _maxFinalSpeed * _maxFinalSpeed)
+        {
+            _rb.velocity = horizontalVelocity.normalized * _maxFinalSpeed + Vector3.up * _rb.velocity.y;
+        }
+
+        LookAtWithCamera();
+    }
+
     private void StartRun(InputAction.CallbackContext obj)
     {
         _maxFinalSpeed = maxRunSpeed;
@@ -156,12 +186,6 @@ public class ThirdPersonController : Utils.Singleton.Singleton<ThirdPersonContro
 
     #endregion
 
-
-    private void DoInteractControl(InputAction.CallbackContext obj)
-    {
-        _interactor.InteractControl();
-    }
-
     #region Puzzle
 
     private void DoResetPuzzle(InputAction.CallbackContext obj)
@@ -177,5 +201,22 @@ public class ThirdPersonController : Utils.Singleton.Singleton<ThirdPersonContro
         return _player.isInPuzzle;
     }
 
-    #endregion 
+    #endregion
+
+    #region Interaction
+    private void DoInteractControl(InputAction.CallbackContext obj)
+    {
+        _interactor.InteractControl();
+    }
+
+    #endregion
+
+    #region SET
+
+    public void SetPuzzleCameraMovement(bool state)
+    {
+        _puzzleCameraMovement = state;
+    }
+
+    #endregion
 }

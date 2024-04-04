@@ -5,7 +5,7 @@ public static class Helpers
 {
     public const float blackFadeTime = 0.4f;
     public const float panelFadeTime = 0.3f;
-    public static Transform cam => Camera.main.transform;
+    public static Camera cam => Camera.main;
 
     public static void FadeInPanel(GameObject panel)
     {
