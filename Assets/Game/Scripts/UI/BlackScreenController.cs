@@ -2,6 +2,7 @@ using Utils.Singleton;
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Collections;
 
 public class BlackScreenController : Singleton<BlackScreenController>
 {
@@ -28,6 +29,22 @@ public class BlackScreenController : Singleton<BlackScreenController>
     {
         SceneManager.sceneLoaded -= OnSceneLoaded;
     }
+
+    #region Fade in and out
+
+    public void FadeInBlack()
+    {
+        _blackScreen_Panel.SetActive(true);
+        _blackScreen_CanvasGroup.DOFade(1, _blackFadeTime);
+    }
+
+    public void FadeOutBlack()
+    {
+        _blackScreen_CanvasGroup.DOFade(0, _blackFadeTime);
+        _blackScreen_Panel.SetActive(false);
+    }
+
+    #endregion
 
     #region Fades with scenes
     public void FadeInSceneStart()
@@ -79,6 +96,20 @@ public class BlackScreenController : Singleton<BlackScreenController>
             });
         });
         
+    }
+
+    #endregion
+
+    #region GET
+
+    public bool GetBlackScreenOn()
+    {
+        return _blackScreen_CanvasGroup.alpha == 1;
+    }
+
+    public bool GetBlackScreenOff()
+    {
+        return _blackScreen_CanvasGroup.alpha == 0;
     }
 
     #endregion

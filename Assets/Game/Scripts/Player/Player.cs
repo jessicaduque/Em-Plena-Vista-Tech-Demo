@@ -5,7 +5,7 @@ using Utils.Singleton;
 
 public class Player : Singleton<Player>
 {
-    private Rigidbody rb;
+    private Rigidbody _rb;
 
     // Puzzle variables
     public bool isInPuzzle { get; private set; }
@@ -14,7 +14,7 @@ public class Player : Singleton<Player>
 
     private new void Awake()
     {
-        rb = this.GetComponent<Rigidbody>();
+        _rb = this.GetComponent<Rigidbody>();
     }
 
     

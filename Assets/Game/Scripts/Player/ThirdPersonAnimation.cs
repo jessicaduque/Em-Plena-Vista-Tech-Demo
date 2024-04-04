@@ -5,29 +5,29 @@ using Utils.Singleton;
 
 public class ThirdPersonAnimation : Singleton<ThirdPersonAnimation>
 {
-    private Animator animator;
-    private Rigidbody rb;
-    private float maxSpeed;
+    private Animator _animator;
+    private Rigidbody _rb;
+    private float _maxSpeed;
 
     private new void Awake()
     {
-        animator = this.GetComponentInChildren<Animator>();
-        rb = this.GetComponent<Rigidbody>();
+        _animator = this.GetComponentInChildren<Animator>();
+        _rb = this.GetComponent<Rigidbody>();
     }
 
     private void Start()
     {
-        maxSpeed = GetComponent<ThirdPersonController>().maxRunSpeed;
+        _maxSpeed = GetComponent<ThirdPersonController>().maxRunSpeed;
     }
 
     private void Update()
     {
-        animator.SetFloat("speed", rb.velocity.magnitude / maxSpeed);
+        _animator.SetFloat("speed", _rb.velocity.magnitude / _maxSpeed);
     }
 
     public void SetTrigger(string triggerName)
     {
-        rb.velocity = Vector3.zero;
-        animator.SetTrigger(triggerName);
+        _rb.velocity = Vector3.zero;
+        _animator.SetTrigger(triggerName);
     }
 }

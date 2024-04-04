@@ -5,9 +5,10 @@ using UnityEngine;
 public class Stone : MonoBehaviour, IInteractable
 {
     private Vector3 _initialPosition;
+    private GameObject _player;
 
     [SerializeField] private string _prompt;
-    public string InteractionPrompt => _prompt;
+    public string interactionPrompt => _prompt;
 
     void Awake()
     {
@@ -19,9 +20,13 @@ public class Stone : MonoBehaviour, IInteractable
         transform.position = _initialPosition;
     }
 
-    public bool Interact(Interactor interactor)
+    public bool CanInteract()
+    {
+        return true;
+    }
+
+    public void Interact(Interactor interactor)
     {
         Debug.Log("Stone push");
-        return true;
     }
 }

@@ -25,7 +25,8 @@ public class Interactor : MonoBehaviour
 
             if (interactable != null && _previousNumFound == 0)
             {
-                _uiManager.ControlInteractionButton(true);
+                if(interactable.CanInteract())
+                    _uiManager.ControlInteractionButton(true);
             }
         }
         else
@@ -47,7 +48,8 @@ public class Interactor : MonoBehaviour
 
             if(interactable != null)
             {
-                interactable.Interact(this);
+                if (interactable.CanInteract())
+                    interactable.Interact(this);
             }
         }
     }

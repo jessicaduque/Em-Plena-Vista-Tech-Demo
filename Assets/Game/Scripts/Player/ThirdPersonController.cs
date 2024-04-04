@@ -68,6 +68,8 @@ public class ThirdPersonController : Utils.Singleton.Singleton<ThirdPersonContro
 
     public void DisableInputs()
     {
+        _maxFinalSpeed = _maxWalkSpeed;
+
         _playerActionsAsset.Player.ResetPuzzle.started -= DoResetPuzzle;
         _playerActionsAsset.Player.Interact.started -= DoInteractControl;
         _playerActionsAsset.Player.Run.started -= StartRun;
@@ -192,7 +194,7 @@ public class ThirdPersonController : Utils.Singleton.Singleton<ThirdPersonContro
     {
         if (IsInPuzzle())
         {
-            _stonePuzzleManager.ResetStonePuzzle();
+            StartCoroutine(_stonePuzzleManager.ResetStonePuzzle());
         }
     }
 

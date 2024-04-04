@@ -1,18 +1,20 @@
 using UnityEngine;
 using Utils.Singleton;
 using System.Collections.Generic;
+using System.Collections;
 
 public class StonePuzzleManager : Singleton<StonePuzzleManager>
 {
-    private Checkpoint lastCheckpointScript;
-    private bool roots1Active = true;
+    private Checkpoint _lastCheckpointScript;
+    private bool _roots1Active = true;
 
-    private List<GameObject> roots1;
-    private List<GameObject> roots2;
+    private List<GameObject> _roots1;
+    private List<GameObject> _roots2;
 
-    private int roots1Amount = 0;
-    private int roots2Amount = 0;
+    private int _roots1Amount = 0;
+    private int _roots2Amount = 0;
     private ThirdPersonController _thirdPlayerController => ThirdPersonController.I;
+    private BlackScreenController _blackScreenController => BlackScreenController.I;
 
     private new void Awake()
     {
@@ -20,8 +22,8 @@ public class StonePuzzleManager : Singleton<StonePuzzleManager>
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
 
-        roots1 = new List<GameObject>();
-        roots2 = new List<GameObject>();
+        _roots1 = new List<GameObject>();
+        _roots2 = new List<GameObject>();
     }
 
     private void Start()
@@ -31,50 +33,65 @@ public class StonePuzzleManager : Singleton<StonePuzzleManager>
         {
             if (roots[i].GetComponent<Root>().GetIsRoot1())
             {
-                roots1.Add(roots[i]);
-                roots1Amount++;
+                _roots1.Add(roots[i]);
+                _roots1Amount++;
             }
             else
             {
-                roots2.Add(roots[i]);
-                roots2Amount++;
+                _roots2.Add(roots[i]);
+                _roots2Amount++;
             }
         }
 
-        ActivateRoots(roots1Active);
+        ActivateRoots(_roots1Active);
     }
 
-    public void ResetStonePuzzle()
+    public IEnumerator ResetStonePuzzle()
     {
-        _thirdPlayerController.enabled = false;
+        _thirdPlayerController.DisableInputs();
+        _blackScreenController.FadeInBlack();
 
-        if (lastCheckpointScript != null)
+        while (!_blackScreenController.GetBlackScreenOn())
         {
-            for (int i = 0; i < lastCheckpointScript.stonesToReset.Length; i++)
+            yield return null;
+        }
+
+        if (_lastCheckpointScript != null)
+        {
+            for (int i = 0; i < _lastCheckpointScript.stonesToReset.Length; i++)
             {
-                lastCheckpointScript.stonesToReset[i].GetComponent<Stone>().ResetPosition();
+                _lastCheckpointScript.stonesToReset[i].GetComponent<Stone>().ResetPosition();
             }
         }
+
+        _blackScreenController.FadeOutBlack();
+
+        while (!_blackScreenController.GetBlackScreenOff())
+        {
+            yield return null;
+        }
+
+        _thirdPlayerController.EnableInputs();
     }
 
     #region Roots
 
     public void ActivateRoots(bool activateRoots1)
     {
-        for (int i = 0; i < roots1Amount; i++)
+        for (int i = 0; i < _roots1Amount; i++)
         {
-            roots1[i].SetActive(activateRoots1);
+            _roots1[i].SetActive(activateRoots1);
         }
 
-        for (int i = 0; i < roots2Amount; i++)
+        for (int i = 0; i < _roots2Amount; i++)
         {
-            roots2[i].SetActive(!activateRoots1);
+            _roots2[i].SetActive(!activateRoots1);
         }
     }
 
     public void SwitchActiveRoots()
     {
-        roots1Active = !roots1Active;
+        _roots1Active = !_roots1Active;
     }
 
     #endregion
@@ -84,9 +101,9 @@ public class StonePuzzleManager : Singleton<StonePuzzleManager>
     public void SetLastCheckpoint(Checkpoint lastCheckpointScript)
     {
         if (!lastCheckpointScript.isLastPuzzleCheckpoint)
-            this.lastCheckpointScript = lastCheckpointScript;
+            this._lastCheckpointScript = lastCheckpointScript;
         else
-            this.lastCheckpointScript = null;
+            this._lastCheckpointScript = null;
     }
 
     #endregion
