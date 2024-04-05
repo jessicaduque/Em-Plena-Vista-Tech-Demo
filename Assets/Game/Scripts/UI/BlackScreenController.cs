@@ -2,74 +2,115 @@ using Utils.Singleton;
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Collections;
 
 public class BlackScreenController : Singleton<BlackScreenController>
 {
-    [SerializeField] public GameObject blackScreen_Panel;
-    
-    CanvasGroup blackScreen_CanvasGroup;
-    GameObject Player;
-    //TEMPORARIO 
-    [SerializeField]GameObject CorpoMonge;
-
-    float blackFadeTime => Helpers.blackFadeTime;
-    AudioManager _audioManager => AudioManager.I;
+    [SerializeField] private GameObject _blackScreen_Panel;
+    [SerializeField] private CanvasGroup _blackScreen_CanvasGroup;
+    private float _blackCameraFadeTime = 0.2f;
+    private float _blackFadeTime => Helpers.blackFadeTime;
 
     protected override void Awake()
     {
         base.Awake();
 
-        Player = GameObject.FindGameObjectWithTag("Player");
-
-        blackScreen_CanvasGroup = blackScreen_Panel.GetComponent<CanvasGroup>();
+        Time.timeScale = 1;
 
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
-    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         FadeInSceneStart();
     }
 
-    void OnDisable()
+    private void OnDestroy()
     {
         SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
-    #region Black Fade With Scene
+    #region Fade in and out
 
-    public void FadeInSceneStart()
+    public void FadeInBlack()
     {
-        blackScreen_CanvasGroup.alpha = 1f;
-        blackScreen_CanvasGroup.DOFade(0, blackFadeTime);
+        _blackScreen_Panel.SetActive(true);
+        _blackScreen_CanvasGroup.DOFade(1, _blackFadeTime);
     }
 
-    public void FadeOutScene(string sceneName)
+    public void FadeOutBlack()
     {
-        blackScreen_CanvasGroup.DOFade(1, blackFadeTime).OnComplete(() => SceneManager.LoadScene(sceneName)).SetUpdate(true);
+        _blackScreen_CanvasGroup.DOFade(0, _blackFadeTime);
+        _blackScreen_Panel.SetActive(false);
     }
 
     #endregion
 
-    #region Black Fade With Panel
-
-    public void FadeBlackWithPanel(GameObject panel, bool state)
+    #region Fades with scenes
+    public void FadeInSceneStart()
     {
-        blackScreen_CanvasGroup.DOFade(1, blackFadeTime).onComplete = () => {
-            panel.SetActive(state);
+        _blackScreen_Panel.SetActive(true);
+        _blackScreen_CanvasGroup.alpha = 1f;
+        _blackScreen_CanvasGroup.DOFade(0, _blackFadeTime).onComplete = () => _blackScreen_Panel.SetActive(false);
+    }
+
+    public void FadeOutScene(string nomeScene)
+    {
+        _blackScreen_Panel.SetActive(true);
+        _blackScreen_CanvasGroup.DOFade(1, _blackFadeTime).OnComplete(() => SceneManager.LoadScene(nomeScene)).SetUpdate(true);
+    }
+
+    public void RestartGame()
+    {
+        _blackScreen_Panel.SetActive(true);
+        _blackScreen_CanvasGroup.DOFade(1, _blackFadeTime).OnComplete(() => SceneManager.LoadScene("Main")).SetUpdate(true);
+    }
+
+    #endregion
+
+    #region Fades with panels
+    public void FadePanel(GameObject panel, bool estado)
+    {
+        _blackScreen_Panel.SetActive(true);
+        _blackScreen_CanvasGroup.DOFade(1, _blackFadeTime).onComplete = () => {
+            panel.SetActive(estado);
             FadeInSceneStart();
         };
     }
-
     #endregion
 
-    #region Public Get
-
-    public CanvasGroup GetBlackPanelCanvasGroup()
+    #region Fades with cameras
+    
+    public void CameraChangeFade(GameObject cameraOff, GameObject cameraOn)
     {
-        return blackScreen_CanvasGroup;
+        _blackScreen_Panel.SetActive(true);
+        ThirdPersonController.I.DisableInputs();
+        _blackScreen_CanvasGroup.DOFade(1, _blackCameraFadeTime).OnComplete(() =>
+        {
+            cameraOff.SetActive(false);
+            cameraOn.SetActive(true);
+            _blackScreen_CanvasGroup.DOFade(0, _blackCameraFadeTime).OnComplete(() => 
+            {
+                ThirdPersonController.I.EnableInputs();
+                _blackScreen_Panel.SetActive(false); 
+            });
+        });
+        
     }
 
     #endregion
 
+    #region GET
+
+    public bool GetBlackScreenOn()
+    {
+        return _blackScreen_CanvasGroup.alpha == 1;
+    }
+
+    public bool GetBlackScreenOff()
+    {
+        return _blackScreen_CanvasGroup.alpha == 0;
+    }
+
+    #endregion
 }

@@ -4,25 +4,19 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - Chao
-  - PedraLeve
-  - Parede
-  - PedraPesada
-  - Pilar
   - Checkpoint
-  - Canalizador
-  - PuzzleRuinas
   - GameOver
-  - Root1
-  - Root2
+  - Stone
+  - Root
+  - Canalizer
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Interactable
   - Water
   - UI
-  - Stone
+  - 
   - 
   - 
   - 

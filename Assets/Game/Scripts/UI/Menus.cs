@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -6,41 +8,48 @@ public class Menus : MonoBehaviour
     [SerializeField] private GameObject credits;
     [SerializeField] private GameObject menu;
 
-    private void Awake()
-    {
-        CursorSetup();
-    }
-
-    void CursorSetup()
+    private void Start()
     {
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
     }
-
-    #region Scenes Control
-    public void StartGame()
+    public void ComecarJogo()
     {
-        SceneManager.LoadScene("Main");
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
+        SceneManager.LoadScene(1);
     }
+    //public void Configuracoes()
+    //{
+    //    SceneManager.LoadScene(0);
+    //}
 
-    public void RestartGame()
-    {
-        SceneManager.LoadScene("Main");
-    }
+    //public void Creditos()
+    //{
+    //    SceneManager.LoadScene(0);
+    //}
 
-    public void QuitGame()
+
+    public void SairJogo()
     {
         Application.Quit();
     }
 
-    #endregion
-
-    #region Panels Control
-    public void ControlCreditsPanel(bool state)
+    public void Recomeçar()
     {
-        menu.SetActive(!state);
-        credits.SetActive(state);
+        SceneManager.LoadScene(0);
     }
 
-    #endregion
+    public void MostrarCreditos()
+    {
+        menu.SetActive(false);
+        credits.SetActive(true);
+    }
+
+    public void Voltar()
+    {
+        menu.SetActive(true);
+        credits.SetActive(false);
+    }
+
 }
