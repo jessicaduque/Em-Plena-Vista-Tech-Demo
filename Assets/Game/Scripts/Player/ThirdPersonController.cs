@@ -25,7 +25,7 @@ public class ThirdPersonController : Utils.Singleton.Singleton<ThirdPersonContro
     [SerializeField] private Camera _playerMainCamera;
     [SerializeField] private bool _puzzleCameraMovement;
 
-    private Player _player;
+    private Player _player => Player.I;
     private StonePuzzleManager _stonePuzzleManager => StonePuzzleManager.I;
 
     private new void Awake()
@@ -192,15 +192,10 @@ public class ThirdPersonController : Utils.Singleton.Singleton<ThirdPersonContro
 
     private void DoResetPuzzle(InputAction.CallbackContext obj)
     {
-        if (IsInPuzzle())
+        if (_player.isInPuzzle)
         {
             StartCoroutine(_stonePuzzleManager.ResetStonePuzzle());
         }
-    }
-
-    private bool IsInPuzzle()
-    {
-        return _player.isInPuzzle;
     }
 
     #endregion

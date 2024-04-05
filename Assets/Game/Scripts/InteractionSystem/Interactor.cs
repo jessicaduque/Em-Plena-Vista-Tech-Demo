@@ -51,24 +51,10 @@ public class Interactor : MonoBehaviour
             {
                 if (interactable.CanInteract())
                 {
-                    StartCoroutine(SnapPlayerDirectionToInteract(90, interactable, _colliders[0].gameObject));
+                    interactable.InteractControl(this);
                 }
             }
         }
-    }
-
-    private IEnumerator SnapPlayerDirectionToInteract(float angleStep, IInteractable interactable, GameObject interactionObject)
-    {
-        Vector3 test = transform.InverseTransformPoint(interactionObject.transform.position);
-        Debug.Log(test);
-        //while (this.transform.rotation.eulerAngles.y != yRotation)
-        //{
-        //    this.transform.localRotation = Quaternion.AngleAxis(yRotation, Vector3.up * Time.deltaTime);
-        //    yield return null;
-        //}
-        
-        interactable.Interact(this);
-        yield return null;
     }
 
     private void OnDrawGizmos()

@@ -1,44 +1,54 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using DG.Tweening;
 
 public class TeleportPlayer : MonoBehaviour
 {
-    //protected GameObject Player;
-    //protected PlayerController PlayerScript;
-    //protected CanvasGroup blackScreen_CanvasGroup;
-    //protected GameObject CorpoMonge;
+    protected GameObject _player;
 
-    //[SerializeField] protected Vector3 finalPosition;
-    //[SerializeField] protected Vector3 lookingDirection;
+    [SerializeField] protected Vector3 _finalPosition;
+    [SerializeField] protected Vector3 _lookingDirection;
 
-    //BlackScreenController _blackScreenController => BlackScreenController.I;
+    protected ThirdPersonController _thirdPlayerController => ThirdPersonController.I;
+    private BlackScreenController _blackScreenController => BlackScreenController.I;
 
+    private void Awake()
+    {
+        _player = Player.I.gameObject;
+    }
 
-    //private void Awake()
-    //{
-    //    Player = GameObject.FindGameObjectWithTag("Player");
-    //    PlayerScript = Player.GetComponent<PlayerController>();
-    //}
-    //private void Start()
-    //{
-    //    blackScreen_CanvasGroup = BlackScreenController.I.GetBlackPanelCanvasGroup();
-    //    CorpoMonge = PlayerScript.GetPlayerBody();
-    //}
+    protected virtual void OnTriggerEnter(Collider collision)
+    {
+        if (collision.CompareTag("Player"))
+        {
+            StartCoroutine(HandleTeleport());
+        }
+    }
 
-    //protected virtual void OnTriggerEnter(Collider collision)
-    //{
-    //    if (collision.CompareTag("Player"))
-    //    {
-    //        StartCoroutine(PlayerScript.SetCanMove(false));
-    //        blackScreen_CanvasGroup.DOFade(1, Helpers.blackFadeTime).OnComplete(() =>
-    //        {
-    //            Player.transform.position = finalPosition;
-    //            CorpoMonge.transform.eulerAngles = lookingDirection;
-    //            blackScreen_CanvasGroup.DOFade(0, Helpers.blackFadeTime).OnComplete(() => StartCoroutine(PlayerScript.SetCanMove(true)));
-    //        });
+    protected virtual IEnumerator HandleTeleport()
+    {
+        _thirdPlayerController.DisableInputs();
+        _blackScreenController.FadeInBlack();
 
-    //    }
-    //}
+        while (!_blackScreenController.GetBlackScreenOn())
+        {
+            yield return null;
+        }
+
+        _player.transform.position = _finalPosition;
+        _player.transform.localEulerAngles = _lookingDirection;
+
+        _blackScreenController.FadeOutBlack();
+
+        while (!_blackScreenController.GetBlackScreenOff())
+        {
+            yield return null;
+        }
+
+        TeleportFinish();
+    } 
+
+    protected virtual void TeleportFinish()
+    {
+        _thirdPlayerController.EnableInputs();
+    }
 }

@@ -14,9 +14,6 @@ public class UIManager : Singleton<UIManager>
     [SerializeField] private Image _interactionButtonImage;
     [SerializeField] private Sprite _interactionButtonGamepad;
     [SerializeField] private Sprite _interactionButtonKeyboardMouse;
-
-    
-
     private new void Awake()
     {
         _interactionButtonCanvasGroup = _interactionButtonImage.GetComponent<CanvasGroup>();
@@ -39,13 +36,26 @@ public class UIManager : Singleton<UIManager>
 
     }
 
+    #region Control Panels
+
+    public void ControlEndPanel(bool state)
+    {
+        // Nothing yet
+    }
+
+    #endregion
+
+    #region Set
     public void SetActiveCamera(GameObject camera)
     {
         _activeCamera = camera;
     }
+    #endregion
 
+    #region Get
     public GameObject GetActiveCamera()
     {
         return _activeCamera;
     }
+    #endregion 
 }

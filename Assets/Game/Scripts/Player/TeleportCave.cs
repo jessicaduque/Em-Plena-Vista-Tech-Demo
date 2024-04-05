@@ -1,50 +1,39 @@
 using System.Collections.Generic;
 using UnityEngine;
-using DG.Tweening;
 
 public class TeleportCave : TeleportPlayer
 {
-    //[SerializeField] List<GameObject> rocksToDisable = new List<GameObject>();
+    [SerializeField] private List<GameObject> _stonesToDisable = new List<GameObject>();
+    private UIManager _uiManager => UIManager.I;
+    private GameController _gameController => GameController.I;
 
-    //bool playerAlreadyPassed;
 
-    //UIManager _uiManager => UIManager.I;
+    protected override void OnTriggerEnter(Collider collision)
+    {
+        if (collision.CompareTag("Player"))
+        {
+            StartCoroutine(HandleTeleport());
+          
+            if (!_gameController.gameCompleted)
+            {
+                _uiManager.ControlEndPanel(true);
 
-    //protected override void OnTriggerEnter(Collider collision)
-    //{
-    //    if (collision.CompareTag("Player"))
-    //    {
-    //        StartCoroutine(PlayerScript.SetCanMove(false));
-    //        blackScreen_CanvasGroup.DOFade(1, Helpers.blackFadeTime).OnComplete(() =>
-    //        {
-    //            Player.transform.position = finalPosition;
-    //            CorpoMonge.transform.eulerAngles = lookingDirection;
-    //            blackScreen_CanvasGroup.DOFade(0, Helpers.blackFadeTime).OnComplete(() => {
-    //                if (playerAlreadyPassed)
-    //                {
-    //                    StartCoroutine(PlayerScript.SetCanMove(true));
-    //                }
-    //                else
-    //                {
-    //                    _uiManager.ControlEndPanel(true);
-    //                }
-    //            });
-    //        });
-    //    }
+                for (int i = 0; i < _stonesToDisable.Count; i++)
+                {
+                    if (_stonesToDisable[i] != null)
+                    {
+                        _stonesToDisable[i].SetActive(false);
+                    }
+                }
+            }
+        }
+    }
 
-    //    if (!playerAlreadyPassed)
-    //    {
-    //        for (int i = 0; i < rocksToDisable.Count; i++)
-    //        {
-    //            if (rocksToDisable[i] != null)
-    //            {
-    //                rocksToDisable[i].SetActive(false);
-    //            }
-
-    //        }
-    //    }
-
-    //    playerAlreadyPassed = true;
-    //}
-
+    protected override void TeleportFinish()
+    {
+        if (!_gameController.gameCompleted)
+        {
+            _thirdPlayerController.EnableInputs();
+        }
+    }
 }

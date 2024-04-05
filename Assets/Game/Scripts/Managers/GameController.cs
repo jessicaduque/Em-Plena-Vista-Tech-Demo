@@ -5,6 +5,8 @@ using Utils.Singleton;
 
 public class GameController : Singleton<GameController>
 {
+    public bool gameCompleted { get; private set; }
+
     protected override void Awake()
     {
         base.Awake();

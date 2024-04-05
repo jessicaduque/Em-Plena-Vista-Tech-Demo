@@ -8,7 +8,7 @@ public class Player : Singleton<Player>
     private Rigidbody _rb;
 
     // Puzzle variables
-    public bool isInPuzzle { get; private set; }
+    public bool isInPuzzle { get; private set; } = false;
 
     private ThirdPersonController _thirdPlayerController => ThirdPersonController.I;
 
@@ -16,7 +16,6 @@ public class Player : Singleton<Player>
     {
         _rb = this.GetComponent<Rigidbody>();
     }
-
     
 
     #region SET
