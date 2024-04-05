@@ -5,6 +5,7 @@ using System.Collections;
 
 public class StonePuzzleManager : Singleton<StonePuzzleManager>
 {
+    private GameObject _lastCheckpoint;
     private Checkpoint _lastCheckpointScript;
     private bool _roots1Active = true;
 
@@ -13,6 +14,8 @@ public class StonePuzzleManager : Singleton<StonePuzzleManager>
 
     private int _roots1Amount = 0;
     private int _roots2Amount = 0;
+
+    private GameObject _player;
     private ThirdPersonController _thirdPlayerController => ThirdPersonController.I;
     private BlackScreenController _blackScreenController => BlackScreenController.I;
 
@@ -22,6 +25,7 @@ public class StonePuzzleManager : Singleton<StonePuzzleManager>
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
 
+        _player = Player.I.gameObject;
         _roots1 = new List<GameObject>();
         _roots2 = new List<GameObject>();
     }
@@ -64,6 +68,11 @@ public class StonePuzzleManager : Singleton<StonePuzzleManager>
             }
         }
 
+        ActivateRoots(_lastCheckpointScript.roots1Active);
+
+        _player.transform.position = new Vector3(_lastCheckpoint.transform.position.x, _player.transform.position.y, _lastCheckpoint.transform.position.z);
+        _player.transform.rotation = _lastCheckpoint.transform.rotation;
+
         _blackScreenController.FadeOutBlack();
 
         while (!_blackScreenController.GetBlackScreenOff())
@@ -101,9 +110,21 @@ public class StonePuzzleManager : Singleton<StonePuzzleManager>
     public void SetLastCheckpoint(Checkpoint lastCheckpointScript)
     {
         if (!lastCheckpointScript.isLastPuzzleCheckpoint)
+        {
             this._lastCheckpointScript = lastCheckpointScript;
+            _lastCheckpoint = _lastCheckpointScript.gameObject;
+        }
         else
             this._lastCheckpointScript = null;
+    }
+
+    #endregion
+
+    #region Get
+
+    public bool GetRoots1Active()
+    {
+        return _roots1Active;
     }
 
     #endregion

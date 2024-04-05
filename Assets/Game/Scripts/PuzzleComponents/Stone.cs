@@ -10,9 +10,12 @@ public class Stone : MonoBehaviour, IInteractable
     [SerializeField] private string _prompt;
     public string interactionPrompt => _prompt;
 
+    private ThirdPersonAnimation _thirdPersonAnimation => ThirdPersonAnimation.I;
+
     void Awake()
     {
         _initialPosition = transform.position;
+        _player = Player.I.gameObject;
     }
 
     public void ResetPosition()
@@ -20,13 +23,20 @@ public class Stone : MonoBehaviour, IInteractable
         transform.position = _initialPosition;
     }
 
+    #region IInteractable
     public bool CanInteract()
     {
         return true;
     }
+    public void TurnToInteractable()
+    {
+        throw new System.NotImplementedException();
+    }
 
     public void Interact(Interactor interactor)
     {
-        Debug.Log("Stone push");
+        _thirdPersonAnimation.SetBool("Pushing", true);
     }
+
+    #endregion
 }

@@ -30,4 +30,10 @@ public class ThirdPersonAnimation : Singleton<ThirdPersonAnimation>
         _rb.velocity = Vector3.zero;
         _animator.SetTrigger(triggerName);
     }
+
+    public void SetBool(string boolName, bool state)
+    {
+        _rb.velocity = Vector3.zero;
+        _animator.SetBool(boolName, state);
+    }
 }
