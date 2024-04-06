@@ -2,9 +2,13 @@ using UnityEngine;
 using Utils.Singleton;
 using System.Collections.Generic;
 using System.Collections;
+using DG.Tweening;
 
 public class StonePuzzleManager : Singleton<StonePuzzleManager>
 {
+    [SerializeField] private float _activationYOffset = 6.5f;
+    private float _activationAnimationTime = 1;
+
     private GameObject _lastCheckpoint;
     private Checkpoint _lastCheckpointScript;
     private bool _roots1Active = true;
@@ -84,6 +88,31 @@ public class StonePuzzleManager : Singleton<StonePuzzleManager>
     }
 
     #region Roots
+
+    public void ActivateRootsAnimation(bool activateRoots1)
+    {
+        for (int i = 0; i < _roots1Amount; i++)
+        {
+            if(activateRoots1)
+                _roots1[i].SetActive(true);
+            _roots1[i].transform.DOMoveY(_roots1[i].transform.position.y + (activateRoots1 ? _activationYOffset : -_activationYOffset), _activationAnimationTime).OnComplete(() => 
+            { 
+                if (activateRoots1) 
+                    _roots1[i].SetActive(false);
+            });
+        }
+
+        for (int i = 0; i < _roots2Amount; i++)
+        {
+            if (!activateRoots1)
+                _roots2[i].SetActive(true);
+            _roots2[i].transform.DOMoveY(_roots2[i].transform.position.y + (activateRoots1 ? -_activationYOffset : _activationYOffset), _activationAnimationTime).OnComplete(() =>
+            {
+                if (!activateRoots1)
+                    _roots2[i].SetActive(false);
+            });
+        }
+    }
 
     public void ActivateRoots(bool activateRoots1)
     {
