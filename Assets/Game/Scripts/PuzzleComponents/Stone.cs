@@ -24,7 +24,7 @@ public class Stone : MonoBehaviour, IInteractable
         transform.position = _initialPosition;
     }
 
-    private Vector3 GetTurnDirection()
+    private float GetTurnAngles()
     {
         Vector3 inverseTransform = _player.transform.InverseTransformPoint(this.transform.position);
 
@@ -32,36 +32,22 @@ public class Stone : MonoBehaviour, IInteractable
         {
             if (Mathf.Abs(inverseTransform.x) > Mathf.Abs(inverseTransform.z))
             {
-                return -_player.transform.right;
+                return -90;
             }
             else
             {
-                if (inverseTransform.z > 0)
-                {
-                    return _player.transform.forward;
-                }
-                else
-                {
-                    return -_player.transform.forward;
-                }
+                return 0;
             }
         }
         else
         {
             if (Mathf.Abs(inverseTransform.x) > Mathf.Abs(inverseTransform.z))
             {
-                return _player.transform.right;
+                return 90;
             }
             else
             {
-                if (inverseTransform.z > 0)
-                {
-                    return _player.transform.forward;
-                }
-                else
-                {
-                    return -_player.transform.forward;
-                }
+                return 0;
             }
         }
     }
@@ -85,18 +71,27 @@ public class Stone : MonoBehaviour, IInteractable
 
     public IEnumerator TurnToInteractable()
     {
+        float turnAngles = GetTurnAngles();
+        float direction = SnapPlayerDirection();
+        direction += turnAngles;
 
-        Debug.Log(GetTurnDirection());
-        //while (_player.transform.rotation.eulerAngles.y != inverseTransform)
-        //{
-        //    this.transform.localRotation = Quaternion.AngleAxis(yRotation, Vector3.up * Time.deltaTime);
-        //    yield return null;
-        //}
+        while (_player.transform.rotation.eulerAngles.y != direction)
+        {
+            _player.transform.rotation = Quaternion.AngleAxis(direction, Vector3.up * Time.deltaTime);
+            yield return null;
+        }
 
         //_thirdPersonAnimation.SetBool("Pushing", true);
 
         _thirdPersonController.EnableInputs();
         yield return null;
+    }
+
+    private float SnapPlayerDirection(float angleStep = 90) 
+    { 
+        float yRotation = _player.transform.rotation.eulerAngles.y; 
+        yRotation = (float)Mathf.RoundToInt(yRotation / angleStep) * angleStep;
+        return yRotation;
     }
 
     public void FinishInteract()

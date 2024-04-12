@@ -20,6 +20,7 @@ public class ThirdPersonController : Utils.Singleton.Singleton<ThirdPersonContro
 
     // Puzzle fields
     private Interactor _interactor;
+    private bool _canInteract = true;
     [SerializeField] private float _pushStoneTime = 2f;
 
     [SerializeField] private Camera _playerMainCamera;
@@ -60,7 +61,6 @@ public class ThirdPersonController : Utils.Singleton.Singleton<ThirdPersonContro
         _playerActionsAsset.Player.ResetPuzzle.started += DoResetPuzzle;
         _playerActionsAsset.Player.Interact.started += DoInteractControl;
         _playerActionsAsset.Player.Run.started += StartRun;
-        _playerActionsAsset.Player.Run.canceled += EndRun;
 
         _move = _playerActionsAsset.Player.Move;
         _playerActionsAsset.Player.Enable();
@@ -203,7 +203,19 @@ public class ThirdPersonController : Utils.Singleton.Singleton<ThirdPersonContro
     #region Interaction
     private void DoInteractControl(InputAction.CallbackContext obj)
     {
-        _interactor.InteractControl();
+        if (_canInteract)
+        {
+            _interactor.InteractControl();
+            StartCoroutine(InteractCooldown());
+            _canInteract = false;
+        }
+        
+    }
+
+    private IEnumerator InteractCooldown()
+    {
+        yield return new WaitForSeconds(0.1f);
+        _canInteract = true;
     }
 
     #endregion

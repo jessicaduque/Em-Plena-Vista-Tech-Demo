@@ -21,7 +21,6 @@ public class Interactor : MonoBehaviour
 
         if (_numFound > 0)
         {
-            Debug.Log(_colliders[0].gameObject.name);
             var interactable = _colliders[0].GetComponent<IInteractable>();
             
             if (interactable != null && _previousNumFound == 0)
