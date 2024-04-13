@@ -50,6 +50,7 @@ public class Interactor : MonoBehaviour
             {
                 if (interactable.CanInteract())
                 {
+                    Debug.Log("CanInteract");
                     interactable.InteractControl(this);
                 }
             }

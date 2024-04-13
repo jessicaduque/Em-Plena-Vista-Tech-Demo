@@ -1,10 +1,12 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 public class Stone : MonoBehaviour, IInteractable
 {
     private Vector3 _initialPosition;
+    private Vector3 _stoneDirection;
+    private float _stoneMoveOffset = 6;
     private GameObject _player;
 
     [SerializeField] private string _prompt;
@@ -52,10 +54,49 @@ public class Stone : MonoBehaviour, IInteractable
         }
     }
 
+    private float SnapPlayerDirection(float angleStep = 90)
+    {
+        float yRotation = _player.transform.rotation.eulerAngles.y;
+        yRotation = (float)Mathf.RoundToInt(yRotation / angleStep) * angleStep;
+        return yRotation;
+    }
+
     #region IInteractable
     public bool CanInteract()
     {
-        return true;
+        _stoneDirection = _player.transform.position - this.transform.position;
+
+        // Z Axis
+        if (Mathf.Abs(_stoneDirection.x) > Mathf.Abs(_stoneDirection.z))
+        {
+            if (_stoneDirection.x > 0)
+            {
+                _stoneDirection = new Vector3(-1, 0, 0);
+            }
+            else
+            {
+                _stoneDirection = new Vector3(1, 0, 0);
+            }
+        }
+        // X Axis
+        else if (Mathf.Abs(_stoneDirection.z) > Mathf.Abs(_stoneDirection.x))
+        {
+            if (_stoneDirection.z > 0)
+            {
+                _stoneDirection = new Vector3(0, 0, -1);
+            }
+            else
+            {
+                _stoneDirection = new Vector3(0, 0, 1);
+            }
+        }
+        else
+        {
+            _stoneDirection = new Vector3(0, 0, 0);
+        }
+
+        Debug.DrawRay(this.transform.position, _stoneDirection * 10, Color.green);
+        return !Physics.Raycast(this.transform.position, _stoneDirection, out RaycastHit meuRay, 10f);
     }
 
     public void InteractControl(Interactor interactor)
@@ -75,28 +116,28 @@ public class Stone : MonoBehaviour, IInteractable
         float direction = SnapPlayerDirection();
         direction += turnAngles;
 
+        Quaternion quatAngle = Quaternion.AngleAxis(direction, Vector3.up * Time.deltaTime);
+
         while (_player.transform.rotation.eulerAngles.y != direction)
         {
-            _player.transform.rotation = Quaternion.AngleAxis(direction, Vector3.up * Time.deltaTime);
+            _player.transform.rotation = Quaternion.RotateTowards(_player.transform.rotation, quatAngle, Time.deltaTime * 100);
             yield return null;
         }
 
-        //_thirdPersonAnimation.SetBool("Pushing", true);
+        FinishInteract();
 
-        _thirdPersonController.EnableInputs();
         yield return null;
-    }
-
-    private float SnapPlayerDirection(float angleStep = 90) 
-    { 
-        float yRotation = _player.transform.rotation.eulerAngles.y; 
-        yRotation = (float)Mathf.RoundToInt(yRotation / angleStep) * angleStep;
-        return yRotation;
     }
 
     public void FinishInteract()
     {
+        _thirdPersonAnimation.SetBool("Pushing", true);
 
+        this.transform.DOMove(this.transform.position + _stoneDirection * _stoneMoveOffset, 5);
+        _player.transform.DOMove(_player.transform.position + _stoneDirection * _stoneMoveOffset, 5).OnComplete(() => {
+           _thirdPersonAnimation.SetBool("Pushing", false);
+            _thirdPersonController.EnableInputs();
+        });
     }
 
     #endregion
