@@ -6,7 +6,8 @@ public class Root : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.tag == "Stone")
+        Debug.Log("Collision");
+        if (collision.gameObject.CompareTag("Stone"))
         {
             this.gameObject.SetActive(false);
         }

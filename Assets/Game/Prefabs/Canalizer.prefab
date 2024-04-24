@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 927352537296793520}
   - component: {fileID: 927352537296793523}
   - component: {fileID: 927352537296793535}
+  - component: {fileID: 4080037525045078855}
   m_Layer: 3
   m_Name: Canalizer
   m_TagString: Canalizer
@@ -97,9 +98,24 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1.256156, y: 1.4241949, z: 1.2561557}
-  m_Center: {x: -0.0051229796, y: 0.113733105, z: -0.015369455}
+  m_Size: {x: 0.97081774, y: 1.4334491, z: 1.0170882}
+  m_Center: {x: -0.016690653, y: 0.10910597, z: -0.034649253}
 --- !u!114 &927352537296793535
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 927352537296793522}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2bf55d77828633441bc93e4d20ee3e86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CorpoMonge: {fileID: 0}
+  BotaoInteracao: {fileID: 0}
+  EfeitosPrefab: {fileID: 5062587367293580837, guid: 6dfcd5824382df049a9978301d144778, type: 3}
+--- !u!114 &4080037525045078855
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -108,12 +124,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 927352537296793522}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2bf55d77828633441bc93e4d20ee3e86, type: 3}
+  m_Script: {fileID: 11500000, guid: 4b88e972e87fa8a4cb3e6307ef8d29df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CorpoMonge: {fileID: 0}
-  BotaoInteracao: {fileID: 0}
-  EfeitosPrefab: {fileID: 5062587367293580837, guid: 6dfcd5824382df049a9978301d144778, type: 3}
+  _prompt: 
 --- !u!1001 &463727737060923947
 PrefabInstance:
   m_ObjectHideFlags: 0

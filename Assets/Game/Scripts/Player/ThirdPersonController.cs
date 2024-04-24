@@ -34,6 +34,8 @@ public class ThirdPersonController : Utils.Singleton.Singleton<ThirdPersonContro
         _rb = this.GetComponent<Rigidbody>();
         _interactor = this.GetComponent<Interactor>();
         _playerActionsAsset = new ThirdPersonActionsAsset();
+
+        _move = _playerActionsAsset.Player.Move;
     }
 
     private void OnEnable()
@@ -61,15 +63,14 @@ public class ThirdPersonController : Utils.Singleton.Singleton<ThirdPersonContro
         _playerActionsAsset.Player.ResetPuzzle.started += DoResetPuzzle;
         _playerActionsAsset.Player.Interact.started += DoInteractControl;
         _playerActionsAsset.Player.Run.started += StartRun;
+        _playerActionsAsset.Player.Run.canceled += EndRun;
+        _maxFinalSpeed = _maxWalkSpeed;
 
-        _move = _playerActionsAsset.Player.Move;
         _playerActionsAsset.Player.Enable();
     }
 
     public void DisableInputs()
     {
-        _maxFinalSpeed = _maxWalkSpeed;
-
         _playerActionsAsset.Player.ResetPuzzle.started -= DoResetPuzzle;
         _playerActionsAsset.Player.Interact.started -= DoInteractControl;
         _playerActionsAsset.Player.Run.started -= StartRun;

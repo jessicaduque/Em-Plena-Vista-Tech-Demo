@@ -7,7 +7,7 @@ using DG.Tweening;
 public class StonePuzzleManager : Singleton<StonePuzzleManager>
 {
     [SerializeField] private float _activationYOffset = 6.5f;
-    private float _activationAnimationTime = 1;
+    private float _activationAnimationTime = 2;
 
     private GameObject _lastCheckpoint;
     private Checkpoint _lastCheckpointScript;
@@ -51,7 +51,7 @@ public class StonePuzzleManager : Singleton<StonePuzzleManager>
             }
         }
 
-        ActivateRoots(_roots1Active);
+        ActivateRoots();
     }
 
     public IEnumerator ResetStonePuzzle()
@@ -68,11 +68,12 @@ public class StonePuzzleManager : Singleton<StonePuzzleManager>
         {
             for (int i = 0; i < _lastCheckpointScript.stonesToReset.Length; i++)
             {
-                _lastCheckpointScript.stonesToReset[i].GetComponent<Stone>().ResetPosition();
+                _lastCheckpointScript.stonesToReset[i].GetComponent<Stone>().SetPosition();
             }
         }
 
-        ActivateRoots(_lastCheckpointScript.roots1Active);
+        SetRoots1Active(_lastCheckpointScript.roots1Active);
+        ActivateRoots();
 
         _player.transform.position = new Vector3(_lastCheckpoint.transform.position.x, _player.transform.position.y, _lastCheckpoint.transform.position.z);
         _player.transform.rotation = _lastCheckpoint.transform.rotation;
@@ -89,41 +90,44 @@ public class StonePuzzleManager : Singleton<StonePuzzleManager>
 
     #region Roots
 
-    public void ActivateRootsAnimation(bool activateRoots1)
+    public void ActivateRootsAnimation()
     {
         for (int i = 0; i < _roots1Amount; i++)
         {
-            if(activateRoots1)
+            if(_roots1Active)
                 _roots1[i].SetActive(true);
-            _roots1[i].transform.DOMoveY(_roots1[i].transform.position.y + (activateRoots1 ? _activationYOffset : -_activationYOffset), _activationAnimationTime).OnComplete(() => 
+            _roots1[i].transform.DOMoveY(_roots1[i].transform.position.y + (_roots1Active ? _activationYOffset : -_activationYOffset), _activationAnimationTime).OnComplete(() => 
             { 
-                if (activateRoots1) 
+                if (_roots1Active) 
                     _roots1[i].SetActive(false);
             });
         }
 
         for (int i = 0; i < _roots2Amount; i++)
         {
-            if (!activateRoots1)
+            if (!_roots1Active)
                 _roots2[i].SetActive(true);
-            _roots2[i].transform.DOMoveY(_roots2[i].transform.position.y + (activateRoots1 ? -_activationYOffset : _activationYOffset), _activationAnimationTime).OnComplete(() =>
+            _roots2[i].transform.DOMoveY(_roots2[i].transform.position.y + (_roots1Active ? -_activationYOffset : _activationYOffset), _activationAnimationTime).OnComplete(() =>
             {
-                if (!activateRoots1)
+                if (!_roots1Active)
                     _roots2[i].SetActive(false);
             });
         }
     }
 
-    public void ActivateRoots(bool activateRoots1)
+    public void ActivateRoots()
     {
         for (int i = 0; i < _roots1Amount; i++)
         {
-            _roots1[i].SetActive(activateRoots1);
+            _roots1[i].SetActive(_roots1Active);
+            _roots1[i].transform.position = new Vector3(_roots1[i].transform.position.x, 2.5f + (_roots1Active ? 0 : -1) * _activationYOffset, _roots1[i].transform.position.z);
         }
 
         for (int i = 0; i < _roots2Amount; i++)
         {
-            _roots2[i].SetActive(!activateRoots1);
+            _roots2[i].SetActive(!_roots1Active);
+            _roots2[i].transform.position = new Vector3(_roots2[i].transform.position.x, 2.5f + (!_roots1Active ? 0 : -1) * _activationYOffset, _roots2[i].transform.position.z);
+
         }
     }
 
@@ -145,6 +149,15 @@ public class StonePuzzleManager : Singleton<StonePuzzleManager>
         }
         else
             this._lastCheckpointScript = null;
+    }
+
+    #endregion
+
+    #region Set
+
+    private void SetRoots1Active(bool state)
+    {
+        _roots1Active = state;
     }
 
     #endregion

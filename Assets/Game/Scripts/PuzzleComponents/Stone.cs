@@ -6,7 +6,7 @@ public class Stone : MonoBehaviour, IInteractable
 {
     private Vector3 _initialPosition;
     private Vector3 _stoneDirection;
-    private float _stoneMoveOffset = 6;
+    private float _stoneMoveOffset = 8;
     private GameObject _player;
 
     [SerializeField] private string _prompt;
@@ -21,11 +21,8 @@ public class Stone : MonoBehaviour, IInteractable
         _player = Player.I.gameObject;
     }
 
-    public void ResetPosition()
-    {
-        transform.position = _initialPosition;
-    }
 
+    #region Define directions
     private float GetTurnAngles()
     {
         Vector3 inverseTransform = _player.transform.InverseTransformPoint(this.transform.position);
@@ -60,6 +57,8 @@ public class Stone : MonoBehaviour, IInteractable
         yRotation = (float)Mathf.RoundToInt(yRotation / angleStep) * angleStep;
         return yRotation;
     }
+
+    #endregion
 
     #region IInteractable
     public bool CanInteract()
@@ -138,6 +137,14 @@ public class Stone : MonoBehaviour, IInteractable
            _thirdPersonAnimation.SetBool("Pushing", false);
             _thirdPersonController.EnableInputs();
         });
+    }
+
+    #endregion
+
+    #region Set
+    public void SetPosition()
+    {
+        transform.position = _initialPosition;
     }
 
     #endregion

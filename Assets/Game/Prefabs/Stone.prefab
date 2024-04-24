@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 4781908918096011958}
   m_Layer: 3
   m_Name: Stone
-  m_TagString: Untagged
+  m_TagString: Stone
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -91,7 +91,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: 89da2511a157be341bf8d02206204ff7, type: 3}
       propertyPath: m_TagString
-      value: Untagged
+      value: Stone
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 89da2511a157be341bf8d02206204ff7, type: 3}
       propertyPath: m_RootOrder

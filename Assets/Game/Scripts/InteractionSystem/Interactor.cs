@@ -13,6 +13,8 @@ public class Interactor : MonoBehaviour
     [SerializeField] private int _numFound;
     private int _previousNumFound;
 
+    private bool _isInteracting;
+
     private UIManager _uiManager => UIManager.I;
 
     private void Update()
@@ -25,7 +27,7 @@ public class Interactor : MonoBehaviour
             
             if (interactable != null && _previousNumFound == 0)
             {
-                if(interactable.CanInteract())
+                if (interactable.CanInteract())
                     _uiManager.ControlInteractionButton(true);
             }
         }
