@@ -66,6 +66,8 @@ public class ThirdPersonController : Utils.Singleton.Singleton<ThirdPersonContro
         _playerActionsAsset.Player.Run.canceled += EndRun;
         _maxFinalSpeed = _maxWalkSpeed;
 
+        _interactor.enabled = true;
+
         _playerActionsAsset.Player.Enable();
     }
 
@@ -75,6 +77,8 @@ public class ThirdPersonController : Utils.Singleton.Singleton<ThirdPersonContro
         _playerActionsAsset.Player.Interact.started -= DoInteractControl;
         _playerActionsAsset.Player.Run.started -= StartRun;
         _playerActionsAsset.Player.Run.canceled -= EndRun;
+
+        _interactor.enabled = false;
 
         _playerActionsAsset.Player.Disable();
     }

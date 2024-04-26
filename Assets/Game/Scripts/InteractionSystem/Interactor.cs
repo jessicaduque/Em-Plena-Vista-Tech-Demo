@@ -1,7 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class Interactor : MonoBehaviour
 {
@@ -16,6 +13,12 @@ public class Interactor : MonoBehaviour
     private bool _isInteracting;
 
     private UIManager _uiManager => UIManager.I;
+
+    private void OnDisable()
+    {
+        _previousNumFound = 0;
+        _uiManager.ControlInteractionButton(false);
+    }
 
     private void Update()
     {
@@ -52,7 +55,6 @@ public class Interactor : MonoBehaviour
             {
                 if (interactable.CanInteract())
                 {
-                    Debug.Log("CanInteract");
                     interactable.InteractControl(this);
                 }
             }

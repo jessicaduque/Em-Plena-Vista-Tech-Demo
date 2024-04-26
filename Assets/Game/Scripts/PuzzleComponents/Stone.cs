@@ -9,6 +9,7 @@ public class Stone : MonoBehaviour, IInteractable
     private float _stoneMoveOffset = 8;
     private GameObject _player;
 
+    [SerializeField] LayerMask _ignoreRC;
     [SerializeField] private string _prompt;
     public string interactionPrompt => _prompt;
 
@@ -95,7 +96,8 @@ public class Stone : MonoBehaviour, IInteractable
         }
 
         Debug.DrawRay(this.transform.position, _stoneDirection * 10, Color.green);
-        return !Physics.Raycast(this.transform.position, _stoneDirection, out RaycastHit meuRay, 10f);
+
+        return !Physics.Raycast(this.transform.position, _stoneDirection, 10f, ~_ignoreRC);
     }
 
     public void InteractControl(Interactor interactor)
