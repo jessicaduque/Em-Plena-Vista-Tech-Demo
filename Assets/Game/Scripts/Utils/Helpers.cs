@@ -26,4 +26,9 @@ public static class Helpers
             onPanel.GetComponent<CanvasGroup>().DOFade(1, panelFadeTime);
         });
     }
+    public static void LockMouse(bool state)
+    {
+        Cursor.visible = state;
+        Cursor.lockState = (state ? CursorLockMode.Locked : CursorLockMode.None);
+    }
 }
