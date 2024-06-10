@@ -16,8 +16,8 @@ public class StonePuzzleManager : Singleton<StonePuzzleManager>
     private Checkpoint _lastCheckpointScript; // Gets the Checkpoint script from the last checkpoint the player passed by
     private bool _roots1Active = true; // Indicates if type 1 roots are active at the moment
 
-    private List<GameObject> _roots1; // List to store type 1 roots in the scene
-    private List<GameObject> _roots2; // List to store type 2 roots in the scene
+    private List<GameObject> _roots1 = new List<GameObject>(); // List to store type 1 roots in the scene
+    private List<GameObject> _roots2 = new List<GameObject>(); // List to store type 2 roots in the scene
 
     private int _roots1Amount = 0; // Caches amount of type 1 roots in the scene
     private int _roots2Amount = 0; // Caches amount of type 2 roots in the scene
@@ -28,16 +28,13 @@ public class StonePuzzleManager : Singleton<StonePuzzleManager>
 
 
     /// <summary>
-    /// Rewrites singleton Awake and initializes root lists
+    /// Rewrites singleton Awake
     /// </summary>
     private new void Awake()
     {
         // TEMPORARY
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
-
-        _roots1 = new List<GameObject>();
-        _roots2 = new List<GameObject>();
     }
     /// <summary>
     /// Gets player gameobject, finds all roots in scene and separates them by their types, 
@@ -185,7 +182,7 @@ public class StonePuzzleManager : Singleton<StonePuzzleManager>
     #region Get
 
     /// <summary>
-    /// Get function to get if type 1 roots are activated
+    /// Get method to get if type 1 roots are activated
     /// </summary>
     /// <returns>Returns bool that indicates if type 1 roots are activated</returns>
     public bool GetRoots1Active()

@@ -52,7 +52,7 @@ public class Interactor : MonoBehaviour
     }
     /// <summary>
     /// If any colliders are detected during Update, checks if object's interaction conditions are met and 
-    /// executes it's interaction function
+    /// executes it's interaction method
     /// </summary>
     public void InteractControl()
     {
