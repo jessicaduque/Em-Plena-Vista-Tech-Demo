@@ -119,15 +119,13 @@ public class Stone : MonoBehaviour, IInteractable
 
         Quaternion quatAngle = Quaternion.AngleAxis(direction, Vector3.up * Time.deltaTime);
 
-        while (_player.transform.rotation.eulerAngles.y != direction)
+        while (_player.transform.rotation != quatAngle)
         {
             _player.transform.rotation = Quaternion.RotateTowards(_player.transform.rotation, quatAngle, Time.deltaTime * 100);
             yield return null;
         }
 
         FinishInteract();
-
-        yield return null;
     }
 
     public void FinishInteract()
