@@ -12,8 +12,9 @@ public class StonePuzzleManager : Singleton<StonePuzzleManager>
     [SerializeField] private float _activationYOffset = 6.5f; // Y offset to alter stone positions, so they appear or dissapear
     private float _activationAnimationTime = 2; // Time for stones to appear or dissapear
 
-    private GameObject _lastCheckpoint; // Saves last checkpoint player passed by
-    private Checkpoint _lastCheckpointScript; // Gets the Checkpoint script from the last checkpoint the player passed by
+    private Transform _lastCheckpointTransform = null; // Saves last checkpoint position player passed by
+    private GameObject[] _stonesToReset; // Save last checkpoint stones to reset
+    private bool _lastRoots1Active; // Save last checkpoints active roots
     private bool _roots1Active = true; // Indicates if type 1 roots are active at the moment
 
     private List<GameObject> _roots1 = new List<GameObject>(); // List to store type 1 roots in the scene
@@ -75,19 +76,16 @@ public class StonePuzzleManager : Singleton<StonePuzzleManager>
             yield return null;
         }
 
-        if (_lastCheckpointScript != null)
+        for (int i = 0; i < _stonesToReset.Length; i++)
         {
-            for (int i = 0; i < _lastCheckpointScript.stonesToReset.Length; i++)
-            {
-                _lastCheckpointScript.stonesToReset[i].GetComponent<Stone>().SetPosition();
-            }
+            _stonesToReset[i].GetComponent<Stone>().SetPosition();
         }
 
-        SetRoots1Active(_lastCheckpointScript.roots1Active);
+        SetRoots1Active(_lastRoots1Active);
         ActivateRoots();
 
-        _player.transform.position = new Vector3(_lastCheckpoint.transform.position.x, _player.transform.position.y, _lastCheckpoint.transform.position.z);
-        _player.transform.rotation = _lastCheckpoint.transform.rotation;
+        _player.transform.position = new Vector3(_lastCheckpointTransform.position.x, _player.transform.position.y, _lastCheckpointTransform.position.z);
+        _player.transform.rotation = _lastCheckpointTransform.rotation;
 
         _blackScreenController.FadeOutBlack();
 
@@ -109,7 +107,7 @@ public class StonePuzzleManager : Singleton<StonePuzzleManager>
         {
             if(_roots1Active)
                 _roots1[i].SetActive(true);
-            _roots1[i].transform.DOMoveY(_roots1[i].transform.position.y + (_roots1Active ? _activationYOffset : -_activationYOffset), _activationAnimationTime).OnComplete(() => 
+            _roots1[i].transform.DOLocalMoveY(_roots1[i].transform.localPosition.y + (_roots1Active ? _activationYOffset : -_activationYOffset), _activationAnimationTime).OnComplete(() => 
             { 
                 if (_roots1Active) 
                     _roots1[i].SetActive(false);
@@ -120,7 +118,7 @@ public class StonePuzzleManager : Singleton<StonePuzzleManager>
         {
             if (!_roots1Active)
                 _roots2[i].SetActive(true);
-            _roots2[i].transform.DOMoveY(_roots2[i].transform.position.y + (_roots1Active ? -_activationYOffset : _activationYOffset), _activationAnimationTime).OnComplete(() =>
+            _roots2[i].transform.DOLocalMoveY(_roots2[i].transform.localPosition.y + (_roots1Active ? -_activationYOffset : _activationYOffset), _activationAnimationTime).OnComplete(() =>
             {
                 if (!_roots1Active)
                     _roots2[i].SetActive(false);
@@ -133,13 +131,13 @@ public class StonePuzzleManager : Singleton<StonePuzzleManager>
         for (int i = 0; i < _roots1Amount; i++)
         {
             _roots1[i].SetActive(_roots1Active);
-            _roots1[i].transform.position = new Vector3(_roots1[i].transform.position.x, 2.5f + (_roots1Active ? 0 : -1) * _activationYOffset, _roots1[i].transform.position.z);
+            _roots1[i].transform.localPosition = new Vector3(_roots1[i].transform.localPosition.x, 3 + (_roots1Active ? 0 : -1) * _activationYOffset, _roots1[i].transform.localPosition.z);
         }
 
         for (int i = 0; i < _roots2Amount; i++)
         {
             _roots2[i].SetActive(!_roots1Active);
-            _roots2[i].transform.position = new Vector3(_roots2[i].transform.position.x, 2.5f + (!_roots1Active ? 0 : -1) * _activationYOffset, _roots2[i].transform.position.z);
+            _roots2[i].transform.localPosition = new Vector3(_roots2[i].transform.localPosition.x, 3 + (!_roots1Active ? 0 : -1) * _activationYOffset, _roots2[i].transform.localPosition.z);
 
         }
     }
@@ -160,11 +158,15 @@ public class StonePuzzleManager : Singleton<StonePuzzleManager>
     {
         if (!lastCheckpointScript.isLastPuzzleCheckpoint)
         {
-            this._lastCheckpointScript = lastCheckpointScript;
-            _lastCheckpoint = _lastCheckpointScript.gameObject;
+            _lastCheckpointTransform = new GameObject().transform; 
+            _lastCheckpointTransform.position = lastCheckpointScript.gameObject.transform.position;
+            _lastCheckpointTransform.rotation = lastCheckpointScript.gameObject.transform.rotation;
+            _lastRoots1Active = lastCheckpointScript.roots1Active;
+            _stonesToReset = lastCheckpointScript.stonesToReset;
         }
         else
-            this._lastCheckpointScript = null;
+            _lastCheckpointTransform = null;
+        Destroy(lastCheckpointScript.gameObject);
     }
 
     /// <summary>
@@ -188,6 +190,11 @@ public class StonePuzzleManager : Singleton<StonePuzzleManager>
     public bool GetRoots1Active()
     {
         return _roots1Active;
+    }
+
+    public Transform GetLastCheckpointTransform()
+    {
+        return _lastCheckpointTransform;
     }
 
     #endregion

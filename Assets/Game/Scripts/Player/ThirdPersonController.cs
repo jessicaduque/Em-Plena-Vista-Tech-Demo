@@ -197,7 +197,7 @@ public class ThirdPersonController : Utils.Singleton.Singleton<ThirdPersonContro
 
     private void DoResetPuzzle(InputAction.CallbackContext obj)
     {
-        if (_player.isInPuzzle)
+        if (_player.isInPuzzle && _stonePuzzleManager.GetLastCheckpointTransform() != null)
         {
             StartCoroutine(_stonePuzzleManager.ResetStonePuzzle());
         }
