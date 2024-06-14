@@ -79,9 +79,6 @@ public class StonePuzzleManager : Singleton<StonePuzzleManager>
         for (int i = 0; i < _stonesToReset.Length; i++)
         {
             _stonesToReset[i].GetComponent<Stone>().SetPosition();
-
-
-
         }
 
         SetRoots1Active(_lastRoots1Active);
