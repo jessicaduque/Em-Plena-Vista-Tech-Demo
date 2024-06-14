@@ -8,19 +8,15 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: stone
-  m_Shader: {fileID: 4800000, guid: 849dc4ff793a3f943ad21a3b6ee26456, type: 3}
-  m_ValidKeywords:
-  - _ADDITIONAL_LIGHTS_ENABLED
-  - _ENVIRONMENT_LIGHTING_ENABLED
-  - _FOG
-  m_InvalidKeywords:
-  - _SEGMENTED_ON
-  - _ZWRITE_ON
+  m_Shader: {fileID: 4800000, guid: ee7e4c9a5f6364b688a332c67fc32cca, type: 3}
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
+  m_DoubleSidedGI: 1
   m_CustomRenderQueue: -1
-  stringTagMap: {}
+  stringTagMap:
+    RenderType: Opaque
   disabledShaderPasses: []
   m_SavedProperties:
     serializedVersion: 3
@@ -30,6 +26,10 @@ Material:
         m_Scale: {x: 0.03, y: 0.03}
         m_Offset: {x: 0.89, y: 0}
     - _BumpMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ClearCoatMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -69,6 +69,22 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _SpecGlossMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_Lightmaps:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_LightmapsInd:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_ShadowMasks:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
     - _AdditionalLights: 1
@@ -77,16 +93,22 @@ Material:
     - _AmbientCol: 0
     - _AnisoSpecular: 0
     - _Blend: 0
+    - _BlendOp: 0
     - _BumpScale: 1
+    - _ClearCoat: 0
+    - _ClearCoatMask: 0
+    - _ClearCoatSmoothness: 1
     - _Clipped: 0
     - _ColBright: 0
     - _ColIntense: 1
     - _Cull: 0
     - _Cutoff: 0.5
+    - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
     - _Emission: 0
     - _EnvironmentLightingEnabled: 1
+    - _EnvironmentReflections: 1
     - _Fog: 1
     - _Fresnel: 0
     - _FresnelSmoothness: 0.1
@@ -109,6 +131,7 @@ Material:
     - _Ramp1: 0.5
     - _RampSmoothness: 0.005
     - _RampTriple: 0
+    - _ReceiveShadows: 1
     - _ReflectionBlend: 0.5
     - _ReflectionProbes: 0
     - _ReflectionSmoothness: 0.5
@@ -119,6 +142,7 @@ Material:
     - _ShnOverlap: 0
     - _ShnRange: 0.15
     - _ShnSmooth: 0
+    - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _Specular: 0
     - _SpecularExponent: 200
@@ -132,14 +156,16 @@ Material:
     - _UVSec: 0
     - _UseRampMap: 0
     - _VertexColor: 0
+    - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
-    - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
+    - _BaseColor: {r: 0.7830189, g: 0.7830189, b: 0.7830189, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _EmissionColor: {r: 0, g: 0, b: 0, a: 0}
     - _FresnelColor: {r: 1, g: 1, b: 1, a: 1}
     - _OtlColor: {r: 0, g: 0, b: 0, a: 1}
     - _ShadowTint: {r: 0, g: 0, b: 0, a: 1}
     - _ShnColor: {r: 1, g: 1, b: 0, a: 1}
+    - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
     - _SpecularColor: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []

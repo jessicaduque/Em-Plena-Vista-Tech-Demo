@@ -7,7 +7,7 @@ using DG.Tweening;
 public class UIManager : Singleton<UIManager>
 {
     private CanvasGroup _interactionButtonCanvasGroup;
-    private float _interactionButtonFadeTime = 0.6f;
+    private float _interactionButtonFadeTime = 0.3f;
     private Tweener _interactionButtonTweener;
     private GameObject _activeCamera;
 

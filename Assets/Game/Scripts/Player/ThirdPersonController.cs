@@ -195,6 +195,7 @@ public class ThirdPersonController : Utils.Singleton.Singleton<ThirdPersonContro
 
     #region Puzzle
 
+
     private void DoResetPuzzle(InputAction.CallbackContext obj)
     {
         if (_player.isInPuzzle && _stonePuzzleManager.GetLastCheckpointTransform() != null)

@@ -100,6 +100,8 @@ Material:
     - _EnableFogOnTransparent: 1
     - _Normal_Strength: 0.6
     - _OpaqueCullMode: 2
+    - _QueueControl: 0
+    - _QueueOffset: 0
     - _RayTracing: 0
     - _ReceivesSSR: 1
     - _ReceivesSSRTransparent: 0
@@ -133,7 +135,7 @@ Material:
     - _ZTestTransparent: 4
     - _ZWrite: 0
     m_Colors:
-    - Color_f81cfcc9b99a474895c54af03c1fefd0: {r: 1, g: 1, b: 1, a: 0}
+    - Color_f81cfcc9b99a474895c54af03c1fefd0: {r: 1, g: 0.2658979, b: 0.2584905, a: 0}
     - Vector2_8e39cc9d9407448cb5fc78370e60216c: {r: 1, g: 0, b: 0, a: 0}
     - Vector2_ee3da453ee474862bd12028a3df74cd4: {r: 0, g: 0, b: 0, a: 0}
     - _Color: {r: 1, g: 0.5020233, b: 0.3443396, a: 0}

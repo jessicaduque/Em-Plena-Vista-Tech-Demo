@@ -79,6 +79,9 @@ public class StonePuzzleManager : Singleton<StonePuzzleManager>
         for (int i = 0; i < _stonesToReset.Length; i++)
         {
             _stonesToReset[i].GetComponent<Stone>().SetPosition();
+
+
+
         }
 
         SetRoots1Active(_lastRoots1Active);
@@ -105,11 +108,11 @@ public class StonePuzzleManager : Singleton<StonePuzzleManager>
     {
         for (int i = 0; i < _roots1Amount; i++)
         {
-            if(_roots1Active)
+            if (_roots1Active)
                 _roots1[i].SetActive(true);
-            _roots1[i].transform.DOLocalMoveY(_roots1[i].transform.localPosition.y + (_roots1Active ? _activationYOffset : -_activationYOffset), _activationAnimationTime).OnComplete(() => 
-            { 
-                if (_roots1Active) 
+            _roots1[i].transform.DOLocalMoveY(_roots1[i].transform.localPosition.y + (_roots1Active ? _activationYOffset : -_activationYOffset), _activationAnimationTime).OnComplete(() =>
+            {
+                if (_roots1Active)
                     _roots1[i].SetActive(false);
             });
         }
@@ -158,7 +161,7 @@ public class StonePuzzleManager : Singleton<StonePuzzleManager>
     {
         if (!lastCheckpointScript.isLastPuzzleCheckpoint)
         {
-            _lastCheckpointTransform = new GameObject().transform; 
+            _lastCheckpointTransform = new GameObject().transform;
             _lastCheckpointTransform.position = lastCheckpointScript.gameObject.transform.position;
             _lastCheckpointTransform.rotation = lastCheckpointScript.gameObject.transform.rotation;
             _lastRoots1Active = lastCheckpointScript.roots1Active;
