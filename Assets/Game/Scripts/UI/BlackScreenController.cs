@@ -2,15 +2,14 @@ using Utils.Singleton;
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using System.Collections;
 
 public class BlackScreenController : Singleton<BlackScreenController>
 {
     [SerializeField] private GameObject _blackScreen_Panel;
     [SerializeField] private CanvasGroup _blackScreen_CanvasGroup;
     private float _blackCameraFadeTime = 0.2f;
-    private float _blackFadeTime => Helpers.blackFadeTime;
 
+    private float _blackFadeTime => Helpers.blackFadeTime;
     protected override void Awake()
     {
         base.Awake();
@@ -54,16 +53,13 @@ public class BlackScreenController : Singleton<BlackScreenController>
         _blackScreen_CanvasGroup.DOFade(0, _blackFadeTime).onComplete = () => _blackScreen_Panel.SetActive(false);
     }
 
-    public void FadeOutScene(string nomeScene)
+    public void FadeOutScene(string nextScene)
     {
+        _blackScreen_CanvasGroup.alpha = 0f;
         _blackScreen_Panel.SetActive(true);
-        _blackScreen_CanvasGroup.DOFade(1, _blackFadeTime).OnComplete(() => SceneManager.LoadScene(nomeScene)).SetUpdate(true);
-    }
-
-    public void RestartGame()
-    {
-        _blackScreen_Panel.SetActive(true);
-        _blackScreen_CanvasGroup.DOFade(1, _blackFadeTime).OnComplete(() => SceneManager.LoadScene("Main")).SetUpdate(true);
+        _blackScreen_CanvasGroup.DOFade(1, _blackFadeTime).OnComplete(() => {
+            SceneManager.LoadScene(nextScene);
+        }).SetUpdate(true);
     }
 
     #endregion
@@ -72,7 +68,7 @@ public class BlackScreenController : Singleton<BlackScreenController>
     public void FadePanel(GameObject panel, bool estado)
     {
         _blackScreen_Panel.SetActive(true);
-        _blackScreen_CanvasGroup.DOFade(1, _blackFadeTime).onComplete = () => {
+        _blackScreen_CanvasGroup.DOFade(1, _blackFadeTime).SetUpdate(true).onComplete = () => {
             panel.SetActive(estado);
             FadeInSceneStart();
         };
@@ -80,7 +76,7 @@ public class BlackScreenController : Singleton<BlackScreenController>
     #endregion
 
     #region Fades with cameras
-    
+
     public void CameraChangeFade(GameObject cameraOff, GameObject cameraOn)
     {
         _blackScreen_Panel.SetActive(true);
@@ -89,13 +85,13 @@ public class BlackScreenController : Singleton<BlackScreenController>
         {
             cameraOff.SetActive(false);
             cameraOn.SetActive(true);
-            _blackScreen_CanvasGroup.DOFade(0, _blackCameraFadeTime).OnComplete(() => 
+            _blackScreen_CanvasGroup.DOFade(0, _blackCameraFadeTime).OnComplete(() =>
             {
                 ThirdPersonController.I.EnableInputs();
-                _blackScreen_Panel.SetActive(false); 
+                _blackScreen_Panel.SetActive(false);
             });
         });
-        
+
     }
 
     #endregion

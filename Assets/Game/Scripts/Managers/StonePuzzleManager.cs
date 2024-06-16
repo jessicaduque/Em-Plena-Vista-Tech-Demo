@@ -125,7 +125,9 @@ public class StonePuzzleManager : Singleton<StonePuzzleManager>
             });
         }
     }
-
+    /// <summary>
+    /// Without any form of animation, activates the type of roots that are supposed to be activated
+    /// </summary>
     public void ActivateRoots()
     {
         for (int i = 0; i < _roots1Amount; i++)
@@ -141,7 +143,9 @@ public class StonePuzzleManager : Singleton<StonePuzzleManager>
 
         }
     }
-
+    /// <summary>
+    /// Switches the type of roots activated in scene
+    /// </summary>
     public void SwitchActiveRoots()
     {
         _roots1Active = !_roots1Active;
@@ -191,7 +195,10 @@ public class StonePuzzleManager : Singleton<StonePuzzleManager>
     {
         return _roots1Active;
     }
-
+    /// <summary>
+    /// Get method to get the transform of the last checpoint passed by the player
+    /// </summary>
+    /// <returns>Returns Transform with last passed checkpoint's Transform</returns>
     public Transform GetLastCheckpointTransform()
     {
         return _lastCheckpointTransform;

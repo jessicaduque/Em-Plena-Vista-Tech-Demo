@@ -3,17 +3,19 @@ using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using Utils.Singleton;
 using DG.Tweening;
-
+/// <summary>
+/// Manager instance in game main scene to control all UI aspects
+/// </summary>
 public class UIManager : Singleton<UIManager>
 {
-    private CanvasGroup _interactionButtonCanvasGroup;
-    private float _interactionButtonFadeTime = 0.3f;
-    private Tweener _interactionButtonTweener;
-    private GameObject _activeCamera;
+    private CanvasGroup _interactionButtonCanvasGroup; // Canvas group for the HUD interaction button indication
+    private float _interactionButtonFadeTime = 0.3f; // Time for fade in and out of interaction button indication
+    private Tweener _interactionButtonTweener; // Tweener to save animation for interaction button indication
+    private GameObject _activeCamera; // Active camera in scene
 
-    [SerializeField] private Image _interactionButtonImage;
-    [SerializeField] private Sprite _interactionButtonGamepad;
-    [SerializeField] private Sprite _interactionButtonKeyboardMouse;
+    [SerializeField] private Image _interactionButtonImage; // Interaction button Image for indication
+    [SerializeField] private Sprite _interactionButtonGamepad;  // Interaction button sprite for the gamepad button
+    [SerializeField] private Sprite _interactionButtonKeyboardMouse; // Interaction button sprite for the keyboard/mouse button
     private new void Awake()
     {
         _interactionButtonCanvasGroup = _interactionButtonImage.GetComponent<CanvasGroup>();
