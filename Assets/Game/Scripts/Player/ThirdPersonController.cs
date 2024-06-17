@@ -21,7 +21,6 @@ public class ThirdPersonController : Utils.Singleton.Singleton<ThirdPersonContro
     // Puzzle fields
     private Interactor _interactor;
     private bool _canInteract = true;
-    [SerializeField] private float _pushStoneTime = 2f;
 
     [SerializeField] private Camera _playerMainCamera;
     [SerializeField] private bool _puzzleCameraMovement;
