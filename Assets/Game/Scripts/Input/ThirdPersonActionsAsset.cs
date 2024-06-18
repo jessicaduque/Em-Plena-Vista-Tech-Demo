@@ -198,7 +198,7 @@ public partial class @ThirdPersonActionsAsset : IInputActionCollection2, IDispos
                 {
                     ""name"": """",
                     ""id"": ""5d662052-87f6-4855-9160-8a3d790bb19f"",
-                    ""path"": ""<Gamepad>/leftShoulder"",
+                    ""path"": ""<Gamepad>/rightShoulder"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",

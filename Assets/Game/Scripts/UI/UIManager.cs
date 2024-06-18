@@ -9,7 +9,7 @@ using DG.Tweening;
 public class UIManager : Singleton<UIManager>
 {
     private CanvasGroup _interactionButtonCanvasGroup; // Canvas group for the HUD interaction button indication
-    private float _interactionButtonFadeTime = 0.3f; // Time for fade in and out of interaction button indication
+    private float _interactionButtonFadeTime = 0.5f; // Time for fade in and out of interaction button indication
     private Tweener _interactionButtonTweener; // Tweener to save animation for interaction button indication
     private GameObject _activeCamera; // Active camera in scene
 
