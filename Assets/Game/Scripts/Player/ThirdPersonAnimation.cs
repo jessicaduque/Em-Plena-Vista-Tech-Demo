@@ -8,6 +8,10 @@ public class ThirdPersonAnimation : Singleton<ThirdPersonAnimation>
     private Rigidbody _rb;
     private float _maxSpeed;
     private bool _isGrounded = true;
+    private Collider[] _colliders = new Collider[10];
+
+    [SerializeField] private float _feetPointRadius = 0.6f;
+    [SerializeField] private LayerMask _feetMask;
 
     private new void Awake()
     {
@@ -22,44 +26,22 @@ public class ThirdPersonAnimation : Singleton<ThirdPersonAnimation>
 
     private void FixedUpdate()
     {
+        bool newIsGrounded = Physics.OverlapSphereNonAlloc(transform.position, _feetPointRadius, _colliders, _feetMask) > 0;
+        if (!_isGrounded && newIsGrounded)
+        {
+            SetBool("Falling", false);
+        }
+        else if(_isGrounded && !newIsGrounded)
+        {
+            SetBool("Falling", true);
+        }
+        
+        _isGrounded = newIsGrounded;
+
         if (_isGrounded)
             _animator.SetFloat("speed", _rb.velocity.magnitude / _maxSpeed);
     }
     
-    #region Trigger colliders
-    private void OnTriggerEnter(Collider other)
-    {
-        StopAllCoroutines();
-        SetBool("Falling", false);
-        _isGrounded = true;
-    }
-
-    private void OnTriggerStay(Collider other)
-    {
-        if(!_isGrounded)
-        {
-            StopAllCoroutines();
-            SetBool("Falling", false);
-            _isGrounded = true;
-        }
-
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        StartCoroutine(MinTimeForNotGrounded());
-    }
-    #endregion
-
-    private IEnumerator MinTimeForNotGrounded()
-    {
-        _isGrounded = false;
-        yield return new WaitForSeconds(0.2f);
-
-        SetBool("Falling", true);
-    }
-
-
     #region Set Animation Parameters
     public void SetTrigger(string triggerName)
     {
@@ -73,4 +55,11 @@ public class ThirdPersonAnimation : Singleton<ThirdPersonAnimation>
         _animator.SetBool(boolName, state);
     }
     #endregion
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, _feetPointRadius);
+    }
+
 }

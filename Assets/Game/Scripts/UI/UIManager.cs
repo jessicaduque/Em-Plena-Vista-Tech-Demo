@@ -13,16 +13,32 @@ public class UIManager : Singleton<UIManager>
     private Tweener _interactionButtonTweener; // Tweener to save animation for interaction button indication
     private GameObject _activeCamera; // Active camera in scene
 
-    [SerializeField] private Image _interactionButtonImage; // Interaction button Image for indication
+    [SerializeField] private Image im_interactionButton; // Interaction button Image for indication
     [SerializeField] private Sprite _interactionButtonGamepad;  // Interaction button sprite for the gamepad button
     [SerializeField] private Sprite _interactionButtonKeyboardMouse; // Interaction button sprite for the keyboard/mouse button
+
+    [SerializeField] private GameObject _endPanel;
+    [SerializeField] private Button b_exitGame;
+    [SerializeField] private Button b_toMenu;
+    [SerializeField] private Button b_continueGame;
+
+    private BlackScreenController _blackScreenController => BlackScreenController.I;
     private new void Awake()
     {
-        _interactionButtonCanvasGroup = _interactionButtonImage.GetComponent<CanvasGroup>();
-        _activeCamera = Helpers.cam.gameObject;
-        _interactionButtonImage.sprite = (Gamepad.all.Count > 0 ? _interactionButtonGamepad : _interactionButtonKeyboardMouse);
+        _interactionButtonCanvasGroup = im_interactionButton.GetComponent<CanvasGroup>();
+        im_interactionButton.sprite = (Gamepad.all.Count > 0 ? _interactionButtonGamepad : _interactionButtonKeyboardMouse);
     }
 
+    private void Start()
+    {
+        GameController.I._gamepadConnectedEvent += () => ChangeInteractionButtonSprite(true);
+        GameController.I._gamepadDisconnectedEvent += () => ChangeInteractionButtonSprite(false);
+    }
+
+    private void ChangeInteractionButtonSprite(bool state)
+    {
+        im_interactionButton.sprite = (state ? _interactionButtonGamepad : _interactionButtonKeyboardMouse);
+    }
     public void ControlInteractionButton(bool state)
     {
         _interactionButtonTweener?.Kill();
@@ -30,11 +46,11 @@ public class UIManager : Singleton<UIManager>
         if (state)
         {
             _interactionButtonCanvasGroup.alpha = 0;
-            _interactionButtonImage.enabled = true;
+            im_interactionButton.enabled = true;
             _interactionButtonTweener = _interactionButtonCanvasGroup.DOFade(1, _interactionButtonFadeTime).SetEase(Ease.InOutSine).OnComplete(() => _interactionButtonCanvasGroup.DOFade(0, _interactionButtonFadeTime)).SetLoops(-1, LoopType.Yoyo);
         }
         else
-            _interactionButtonTweener = _interactionButtonCanvasGroup.DOFade(0, _interactionButtonFadeTime).OnComplete(() => _interactionButtonImage.enabled = false);
+            _interactionButtonTweener = _interactionButtonCanvasGroup.DOFade(0, _interactionButtonFadeTime).OnComplete(() => im_interactionButton.enabled = false);
 
     }
 
@@ -42,7 +58,10 @@ public class UIManager : Singleton<UIManager>
 
     public void ControlEndPanel(bool state)
     {
-        // Nothing yet
+        if (state)
+            Helpers.FadeInPanel(_endPanel);
+        else
+            _blackScreenController.FadeOutScene("Menu");
     }
 
     #endregion
