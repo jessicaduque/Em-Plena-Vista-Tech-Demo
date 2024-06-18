@@ -6,7 +6,7 @@ public class ButtonExtra : MonoBehaviour
 {
     [field: SerializeField] public string nameTag { get; private set; }
     private Button _thisButton;
-    //AudioManager _audioManager => AudioManager.I;
+    AudioManager _audioManager => AudioManager.I;
 
     private void Awake()
     {
@@ -21,7 +21,7 @@ public class ButtonExtra : MonoBehaviour
 
     private void MakeSound()
     {
-        //_audioManager.PlaySfx("ButtonClick");
+        _audioManager.PlaySfx("buttonclick");
         _thisButton.enabled = false;
         StartCoroutine(Reset());
     }        

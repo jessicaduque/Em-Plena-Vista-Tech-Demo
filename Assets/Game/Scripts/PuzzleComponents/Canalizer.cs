@@ -10,7 +10,7 @@ public class Canalizer : MonoBehaviour, IInteractable
     private ThirdPersonAnimation _thirdPersonAnimation => ThirdPersonAnimation.I;
     private ThirdPersonController _thirdPersonController => ThirdPersonController.I;
     private StonePuzzleManager _stonePuzzleManager => StonePuzzleManager.I;
-
+    private AudioManager _audioManager => AudioManager.I;
     private void Awake()
     {
         _player = Player.I.gameObject;
@@ -38,7 +38,7 @@ public class Canalizer : MonoBehaviour, IInteractable
             _player.transform.rotation = Quaternion.RotateTowards(_player.transform.rotation, toRotation, Time.deltaTime * 100);
             yield return null;
         }
-
+        _audioManager.PlaySfx("roots");
         _thirdPersonAnimation.SetTrigger("Canalize");
         _stonePuzzleManager.SwitchActiveRoots();
         _stonePuzzleManager.ActivateRootsAnimation();

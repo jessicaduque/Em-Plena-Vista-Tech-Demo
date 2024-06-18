@@ -84,7 +84,7 @@ public class StonePuzzleManager : Singleton<StonePuzzleManager>
         for (int i = 0; i < _rootsParticles.Length; i++)
         {
             if (_rootsParticles[i].gameObject.activeInHierarchy)
-                _rootsParticles[i].Stop();
+                _rootsParticles[i].Stop(false, ParticleSystemStopBehavior.StopEmittingAndClear);
         }
 
         SetRoots1Active(_lastRoots1Active);

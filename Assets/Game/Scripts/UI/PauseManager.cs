@@ -86,7 +86,7 @@ public class PauseManager : MonoBehaviour
     {
         b_music.onClick.AddListener(ChangeMusicState);
         b_effects.onClick.AddListener(ChangeEffectsState);
-        b_menu.onClick.AddListener(() => BlackScreenController.I.FadeOutScene("Menu"));
+        b_menu.onClick.AddListener(() => { _audioManager.PlayCrossFade("menumusic"); BlackScreenController.I.FadeOutScene("Menu"); });
         b_continue.onClick.AddListener(() => { ButtonsActivationControl(false); UIManager.I.ControlPausePanel(false); });
     }
 

@@ -22,6 +22,7 @@ public class UIManager : Singleton<UIManager>
     [SerializeField] private Button b_exitGame;
 
     private BlackScreenController _blackScreenController => BlackScreenController.I;
+    private AudioManager _audioManager => AudioManager.I;
     private new void Awake()
     {
         _interactionButtonCanvasGroup = im_interactionButton.GetComponent<CanvasGroup>();
@@ -68,7 +69,10 @@ public class UIManager : Singleton<UIManager>
         if (state)
             Helpers.FadeInPanel(_endPanel);
         else
+        {
+            _audioManager.PlayCrossFade("menumusic");
             _blackScreenController.FadeOutScene("Menu");
+        }    
     }
 
     #endregion

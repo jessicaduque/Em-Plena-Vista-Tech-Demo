@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: stonepush
   m_EditorClassIdentifier: 
   soundName: stonepush
-  clip: {fileID: 8300000, guid: 714bd3f6f1bc67640b8f640403f17156, type: 3}
+  clip: {fileID: 8300000, guid: 31938ccdc3dc15d4eb9700b5f3e2265e, type: 3}
   loop: 0
   volume: 1
   pitch: 1

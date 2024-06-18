@@ -11,8 +11,10 @@ public class MenuUIManager : MonoBehaviour
     [SerializeField] private Button b_exit;
 
     private BlackScreenController _blackScreenController => BlackScreenController.I;
+    private AudioManager _audioManager => AudioManager.I;
     private void Start()
     {
+        _audioManager.FadeInMusic("menumusic");
         Helpers.LockMouse(false);
         ButtonSetup();
     }
@@ -30,6 +32,7 @@ public class MenuUIManager : MonoBehaviour
     {
         Helpers.LockMouse(true);
         _blackScreenController.FadeOutScene("Main");
+        _audioManager.PlayCrossFade("mainmusic");
     }
 
     private void ControlCreditsPanel(bool state)
