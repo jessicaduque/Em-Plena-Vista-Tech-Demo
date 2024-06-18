@@ -17,10 +17,9 @@ public class UIManager : Singleton<UIManager>
     [SerializeField] private Sprite _interactionButtonGamepad;  // Interaction button sprite for the gamepad button
     [SerializeField] private Sprite _interactionButtonKeyboardMouse; // Interaction button sprite for the keyboard/mouse button
 
+    [SerializeField] private GameObject _pausePanel;
     [SerializeField] private GameObject _endPanel;
     [SerializeField] private Button b_exitGame;
-    [SerializeField] private Button b_toMenu;
-    [SerializeField] private Button b_continueGame;
 
     private BlackScreenController _blackScreenController => BlackScreenController.I;
     private new void Awake()
@@ -55,6 +54,14 @@ public class UIManager : Singleton<UIManager>
     }
 
     #region Control Panels
+
+    public void ControlPausePanel(bool state)
+    {
+        if (state)
+            Helpers.FadeInPanel(_pausePanel);
+        else
+            Helpers.FadeOutPanel(_pausePanel);
+    }
 
     public void ControlEndPanel(bool state)
     {

@@ -20,6 +20,8 @@ public class StonePuzzleManager : Singleton<StonePuzzleManager>
     private List<GameObject> _roots1 = new List<GameObject>(); // List to store type 1 roots in the scene
     private List<GameObject> _roots2 = new List<GameObject>(); // List to store type 2 roots in the scene
 
+    [SerializeField] ParticleSystem[] _rootsParticles; // Particles for roots
+
     private int _roots1Amount = 0; // Caches amount of type 1 roots in the scene
     private int _roots2Amount = 0; // Caches amount of type 2 roots in the scene
 
@@ -31,12 +33,10 @@ public class StonePuzzleManager : Singleton<StonePuzzleManager>
     /// <summary>
     /// Rewrites singleton Awake
     /// </summary>
-    private new void Awake()
+    protected override void Awake()
     {
-        // TEMPORARY
-        Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Locked;
     }
+
     /// <summary>
     /// Gets player gameobject, finds all roots in scene and separates them by their types, 
     /// does initial activation for the beginning of the scene
@@ -81,6 +81,12 @@ public class StonePuzzleManager : Singleton<StonePuzzleManager>
             _stonesToReset[i].GetComponent<Stone>().SetPosition();
         }
 
+        for (int i = 0; i < _rootsParticles.Length; i++)
+        {
+            if (_rootsParticles[i].gameObject.activeInHierarchy)
+                _rootsParticles[i].Stop();
+        }
+
         SetRoots1Active(_lastRoots1Active);
         ActivateRoots();
 
@@ -103,6 +109,7 @@ public class StonePuzzleManager : Singleton<StonePuzzleManager>
     /// </summary>
     public void ActivateRootsAnimation()
     {
+
         for (int i = 0; i < _roots1Amount; i++)
         {
             if (_roots1Active)
@@ -123,6 +130,12 @@ public class StonePuzzleManager : Singleton<StonePuzzleManager>
                 if (!_roots1Active)
                     _roots2[i].SetActive(false);
             });
+        }
+
+        for(int i = 0; i < _rootsParticles.Length; i++)
+        {
+            if(_rootsParticles[i].gameObject.activeInHierarchy)
+                _rootsParticles[i].Play();
         }
     }
     /// <summary>
