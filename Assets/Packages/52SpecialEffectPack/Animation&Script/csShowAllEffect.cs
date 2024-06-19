@@ -14,6 +14,7 @@ public class csShowAllEffect : MonoBehaviour
 
     void Update ()
     {
+
         if (Input.GetKeyDown(KeyCode.Z))
         {
             if (i <= 0)
