@@ -10,6 +10,8 @@ public class BlackScreenController : Singleton<BlackScreenController>
     private float _blackCameraFadeTime = 0.5f;
 
     private float _blackFadeTime => Helpers.blackFadeTime;
+    private UIManager _uiManager => UIManager.I;
+    private ThirdPersonController _thirdPersonController => ThirdPersonController.I;
     protected override void Awake()
     {
         base.Awake();
@@ -80,18 +82,20 @@ public class BlackScreenController : Singleton<BlackScreenController>
     public void CameraChangeFade(GameObject cameraOff, GameObject cameraOn)
     {
         _blackScreen_Panel.SetActive(true);
-        ThirdPersonController.I.DisableInputs();
-        _blackScreen_CanvasGroup.DOFade(1, _blackCameraFadeTime).OnComplete(() =>
+        _thirdPersonController.DisableInputs();
+        if(_uiManager.GetActiveCamera() != cameraOn)
         {
-            cameraOff.SetActive(false);
-            cameraOn.SetActive(true);
-            _blackScreen_CanvasGroup.DOFade(0, _blackCameraFadeTime).OnComplete(() =>
+            _blackScreen_CanvasGroup.DOFade(1, _blackCameraFadeTime).OnComplete(() =>
             {
-                ThirdPersonController.I.EnableInputs();
-                _blackScreen_Panel.SetActive(false);
+                cameraOff.SetActive(false);
+                cameraOn.SetActive(true);
+                _blackScreen_CanvasGroup.DOFade(0, _blackCameraFadeTime).OnComplete(() =>
+                {
+                    _thirdPersonController.EnableInputs();
+                    _blackScreen_Panel.SetActive(false);
+                });
             });
-        });
-
+        }
     }
 
     #endregion

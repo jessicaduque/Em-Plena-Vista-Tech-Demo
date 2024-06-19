@@ -44,6 +44,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dafd326dfa7b20f40a02fb3ffb322a6c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _interactionButtonImage: {fileID: 0}
-  _interactionButtonGamepad: {fileID: -2116555161, guid: 0ca6895c0893aa04494674c2ee8ae242, type: 3}
-  _interactionButtonKeyboardMouse: {fileID: -1016576767, guid: 7e17249d3521528419de1714a868fb90, type: 3}
+  _indicationResetCanvasGroup: {fileID: 0}
+  im_interactionButton: {fileID: 0}
+  _interactionButtonGamepad: {fileID: 21300000, guid: ceaec2c685f70d14eabcaf3a65c6a0b3, type: 3}
+  _interactionButtonKeyboardMouse: {fileID: 21300000, guid: 6e65a2709ae7d704fb1ebd59438bbe09, type: 3}
+  im_indicationResetButton: {fileID: 0}
+  _indicationResetButtonGamepad: {fileID: 1426141125, guid: 7ba0459401163a24d831d7ca1897b505, type: 3}
+  _indicationResetButtonKeyboardMouse: {fileID: -793477963, guid: ea4df161734835b449ec551d7108e3fb, type: 3}
+  _pausePanel: {fileID: 0}
+  _endPanel: {fileID: 0}
+  b_exitGame: {fileID: 0}

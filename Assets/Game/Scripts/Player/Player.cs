@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using Utils.Singleton;
 
@@ -10,12 +11,21 @@ public class Player : Singleton<Player>
     // Puzzle variables
     public bool isInPuzzle { get; private set; } = false; // Indicates if player is inside puzzle area (to reduce update checks)
 
+    private StonePuzzleManager _stonePuzzleManager => StonePuzzleManager.I;
+    private UIManager _uiManager => UIManager.I;
     /// <summary>
     /// Rewrites singleton Awake and get player's rigidbody component
     /// </summary>
     private new void Awake()
     {
         _rb = this.GetComponent<Rigidbody>();
+    }
+
+    private IEnumerator ControlIndicationWait()
+    {
+        yield return new WaitForSeconds(Helpers.blackFadeTime);
+
+        _uiManager.ControlIndicationResetInfo(true);
     }
 
     #region SET
@@ -26,6 +36,16 @@ public class Player : Singleton<Player>
     public void SetIsInPuzzle(bool isInPuzzle)
     {
         this.isInPuzzle = isInPuzzle;
+        if (isInPuzzle && _stonePuzzleManager.GetLastCheckpointTransform() != null)
+        {
+            StartCoroutine(ControlIndicationWait());
+        }
+        else
+        {
+            StopAllCoroutines();
+            _uiManager.ControlIndicationResetInfo(false);
+        }
+        
     }
 
     #endregion
