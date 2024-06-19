@@ -123,7 +123,7 @@ public class ThirdPersonController : Utils.Singleton.Singleton<ThirdPersonContro
         _forceDirection = Vector3.zero;
 
         if (_rb.velocity.y < 0f)
-            _rb.velocity -= Vector3.down * Physics.gravity.y * Time.fixedDeltaTime;
+            _rb.velocity -= Vector3.down * Physics.gravity.y * 4 * Time.fixedDeltaTime;
 
         Vector3 horizontalVelocity = _rb.velocity;
         horizontalVelocity.y = 0;
