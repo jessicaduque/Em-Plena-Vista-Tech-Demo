@@ -14,6 +14,11 @@ public class ButtonExtra : MonoBehaviour
         _thisButton.onClick.AddListener(MakeSound);
     }
 
+    private void OnEnable()
+    {
+        _thisButton.interactable = true;
+    }
+
     private void OnDisable()
     {
         StopAllCoroutines();
@@ -22,14 +27,14 @@ public class ButtonExtra : MonoBehaviour
     private void MakeSound()
     {
         _audioManager.PlaySfx("buttonclick");
-        _thisButton.enabled = false;
+        _thisButton.interactable = false;
         StartCoroutine(Reset());
     }        
 
     IEnumerator Reset()
     {
         yield return new WaitForSeconds(0.1f);
-        _thisButton.enabled = true;
+        _thisButton.interactable = true;
     }
 
 }

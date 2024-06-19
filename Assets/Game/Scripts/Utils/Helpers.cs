@@ -27,7 +27,7 @@ public static class Helpers
     }
     public static void LockMouse(bool state)
     {
-        Cursor.visible = state;
-        Cursor.lockState = (state ? CursorLockMode.Locked : CursorLockMode.None);
+        Cursor.visible = !state;
+        Cursor.lockState = (!state ? CursorLockMode.None : CursorLockMode.Locked);
     }
 }

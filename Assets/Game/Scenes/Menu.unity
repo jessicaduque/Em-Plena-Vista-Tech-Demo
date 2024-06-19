@@ -142,6 +142,14 @@ PrefabInstance:
       propertyPath: m_fontSize
       value: 72
       objectReference: {fileID: 0}
+    - target: {fileID: 6862177447005378873, guid: 0a4ef2a9ec35e5a49a7bde22e903cfd5, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6862177447005378873, guid: 0a4ef2a9ec35e5a49a7bde22e903cfd5, type: 3}
+      propertyPath: m_Interactable
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6862177447005378874, guid: 0a4ef2a9ec35e5a49a7bde22e903cfd5, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -1320,6 +1328,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 11bc06aa4c0884d40a2d9d0f46c323d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  b_exitCredits: {fileID: 1883324020}
 --- !u!1 &1058410254
 GameObject:
   m_ObjectHideFlags: 0
@@ -1656,7 +1665,6 @@ MonoBehaviour:
   _creditsPanel: {fileID: 1031121748}
   b_start: {fileID: 1192986590}
   b_credits: {fileID: 135617482}
-  b_exitCredits: {fileID: 1883324020}
   b_exit: {fileID: 8113214}
 --- !u!1 &1585044830
 GameObject:
