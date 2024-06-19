@@ -26,7 +26,6 @@ public class UIManager : Singleton<UIManager>
 
     [SerializeField] private GameObject _pausePanel; // Pause panel for control
     [SerializeField] private GameObject _endPanel; // End panel for conttrol
-    [SerializeField] private Button b_exitGame; // Exit to go to menu button on the end panel
 
     private ThirdPersonController _thirdPersonController => ThirdPersonController.I;
     private BlackScreenController _blackScreenController => BlackScreenController.I;
