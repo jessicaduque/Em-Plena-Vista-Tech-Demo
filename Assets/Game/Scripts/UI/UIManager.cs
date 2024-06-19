@@ -15,7 +15,7 @@ public class UIManager : Singleton<UIManager>
     private CanvasGroup _interactionButtonCanvasGroup; // Canvas group for the HUD interaction button indication
     private float _hudButtonsFadeTime = 0.5f; // Time for fade in and out of interaction button indication
     private Tweener _interactionButtonTweener; // Tweener to save animation for interaction button indication
-    private GameObject _activeCamera; // Active camera in scene
+    [SerializeField] GameObject _activeCamera; // Active camera in scene
 
     [SerializeField] private Image im_interactionButton; // Interaction button Image for indication
     [SerializeField] private Sprite _interactionButtonGamepad;  // Interaction button sprite for the gamepad button
@@ -27,7 +27,6 @@ public class UIManager : Singleton<UIManager>
     [SerializeField] private GameObject _pausePanel; // Pause panel for control
     [SerializeField] private GameObject _endPanel; // End panel for conttrol
 
-    private ThirdPersonController _thirdPersonController => ThirdPersonController.I;
     private BlackScreenController _blackScreenController => BlackScreenController.I;
     private AudioManager _audioManager => AudioManager.I;
     private new void Awake()

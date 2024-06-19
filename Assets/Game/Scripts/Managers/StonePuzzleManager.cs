@@ -13,6 +13,7 @@ public class StonePuzzleManager : Singleton<StonePuzzleManager>
     private float _activationAnimationTime = 2; // Time for stones to appear or dissapear
 
     private Transform _lastCheckpointTransform = null; // Saves last checkpoint position player passed by
+    public GameObject _cameraCheckpoint; // Save last checkpoint camera to be active
     private GameObject[] _stonesToReset; // Save last checkpoint stones to reset
     private bool _lastRoots1Active; // Save last checkpoints active roots
     private bool _roots1Active = true; // Indicates if type 1 roots are active at the moment
@@ -26,6 +27,8 @@ public class StonePuzzleManager : Singleton<StonePuzzleManager>
     private int _roots2Amount = 0; // Caches amount of type 2 roots in the scene
 
     private GameObject _player; // Gets the player gameobject
+
+    private UIManager _uiManager => UIManager.I; // Gets the player gameobject
     private ThirdPersonController _thirdPlayerController => ThirdPersonController.I; // Gets the player's third person controller script instance
     private BlackScreenController _blackScreenController => BlackScreenController.I; // Gets the UI black screen controller script instance
 
@@ -89,9 +92,19 @@ public class StonePuzzleManager : Singleton<StonePuzzleManager>
 
         SetRoots1Active(_lastRoots1Active);
         ActivateRoots();
+        yield return new WaitForSeconds(0.1f);
 
         _player.transform.position = new Vector3(_lastCheckpointTransform.position.x, _player.transform.position.y, _lastCheckpointTransform.position.z);
         _player.transform.rotation = _lastCheckpointTransform.rotation;
+
+        _cameraCheckpoint.SetActive(true);
+
+        if(_uiManager.GetActiveCamera() != _cameraCheckpoint)
+            _uiManager.GetActiveCamera().SetActive(false);
+        
+        _uiManager.SetActiveCamera(_cameraCheckpoint);
+
+        yield return new WaitForSeconds(0.1f);
 
         _blackScreenController.FadeOutBlack();
 
@@ -180,6 +193,7 @@ public class StonePuzzleManager : Singleton<StonePuzzleManager>
             _lastCheckpointTransform.rotation = lastCheckpointScript.gameObject.transform.rotation;
             _lastRoots1Active = lastCheckpointScript.roots1Active;
             _stonesToReset = lastCheckpointScript.stonesToReset;
+            _cameraCheckpoint = lastCheckpointScript.cameraCheckpoint;
         }
         else
             _lastCheckpointTransform = null;
