@@ -3,11 +3,14 @@ using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using Utils.Singleton;
 using DG.Tweening;
+using System.Collections;
 /// <summary>
 /// Manager instance in game main scene to control all UI aspects
 /// </summary>
 public class UIManager : Singleton<UIManager>
 {
+    private UIControls _uiControls; // Input asset for UI controls
+
     [SerializeField] CanvasGroup _indicationResetCanvasGroup;
     private CanvasGroup _interactionButtonCanvasGroup; // Canvas group for the HUD interaction button indication
     private float _hudButtonsFadeTime = 0.5f; // Time for fade in and out of interaction button indication
@@ -25,6 +28,7 @@ public class UIManager : Singleton<UIManager>
     [SerializeField] private GameObject _endPanel; // End panel for conttrol
     [SerializeField] private Button b_exitGame; // Exit to go to menu button on the end panel
 
+    private ThirdPersonController _thirdPersonController => ThirdPersonController.I;
     private BlackScreenController _blackScreenController => BlackScreenController.I;
     private AudioManager _audioManager => AudioManager.I;
     private new void Awake()
@@ -32,6 +36,17 @@ public class UIManager : Singleton<UIManager>
         _interactionButtonCanvasGroup = im_interactionButton.GetComponent<CanvasGroup>();
         im_interactionButton.sprite = (Gamepad.all.Count > 0 ? _interactionButtonGamepad : _interactionButtonKeyboardMouse);
         im_indicationResetButton.sprite = (Gamepad.all.Count > 0 ? _indicationResetButtonGamepad : _indicationResetButtonKeyboardMouse);
+
+        _uiControls = new UIControls();
+    }
+
+    private void OnEnable()
+    {
+        StartCoroutine(EnableInputCooldowns(Helpers.blackFadeTime));
+    }
+    private void OnDisable()
+    {
+        StopAllCoroutines();
     }
 
     private void Start()
@@ -40,6 +55,33 @@ public class UIManager : Singleton<UIManager>
         GameController.I._gamepadDisconnectedEvent += () => ChangeButtonsSpritesInput(false);
     }
 
+    #region Input
+
+    private void EnableInput()
+    {
+        _uiControls.InGame.PauseGame.started += ControlPausePanel;
+
+        _uiControls.InGame.Enable();
+    }
+
+    private IEnumerator EnableInputCooldowns(float seconds)
+    {
+        yield return new WaitForSecondsRealtime(seconds);
+        Time.timeScale = 1;
+        EnableInput();
+    }
+
+    private void DisableInput()
+    {
+        _uiControls.InGame.PauseGame.started -= ControlPausePanel;
+
+        _uiControls.InGame.Disable();
+    }
+
+
+    #endregion
+
+    #region HUD button indication controls
     private void ChangeButtonsSpritesInput(bool state)
     {
         im_interactionButton.sprite = (state ? _interactionButtonGamepad : _interactionButtonKeyboardMouse);
@@ -66,20 +108,36 @@ public class UIManager : Singleton<UIManager>
         _indicationResetCanvasGroup.DOFade(state ? 1 : 0, _hudButtonsFadeTime);
     }
 
+    #endregion
+
     #region Control Panels
 
     public void ControlPausePanel(bool state)
     {
         if (state)
+        {
+            Helpers.LockMouse(false);
+            DisableInput();
+            Time.timeScale = 0;
             Helpers.FadeInPanel(_pausePanel);
+        }
         else
+        {
+            Helpers.LockMouse(true);
+            StartCoroutine(EnableInputCooldowns(Helpers.panelFadeTime));
             Helpers.FadeOutPanel(_pausePanel);
+        }
+    }
+
+    public void ControlPausePanel(InputAction.CallbackContext obj)
+    {
+        ControlPausePanel(true);
     }
 
     public void ControlEndPanel(bool state)
     {
         if (state)
-            Helpers.FadeInPanel(_endPanel);
+            _blackScreenController.FadePanel(_endPanel, true);
         else
         {
             _audioManager.PlayCrossFade("menumusic");

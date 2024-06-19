@@ -1,6 +1,7 @@
 using System.Collections;
 using DG.Tweening;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 public class PauseManager : MonoBehaviour
@@ -11,6 +12,9 @@ public class PauseManager : MonoBehaviour
     [Header("Normal Buttons")]
     [SerializeField] Button b_continue;
     [SerializeField] Button b_menu;
+
+    [Header("Input")]
+    private UIControls _uiControls; 
 
     [Header("Music Settings")]
     [SerializeField] Button b_music;
@@ -54,6 +58,8 @@ public class PauseManager : MonoBehaviour
         _buttons[1] = b_menu;
         _buttons[2] = b_music;
         _buttons[3] = b_effects;
+
+        _uiControls = new UIControls();
     }
 
     private void Start()
@@ -65,7 +71,35 @@ public class PauseManager : MonoBehaviour
     {
         CheckInicialAudio();
         StartCoroutine(WaitForPanelStart());
+        StartCoroutine(EnableInputCooldowns(Helpers.panelFadeTime));
     }
+
+    private void OnDisable()
+    {
+        StopAllCoroutines();
+    }
+
+    #region Input
+
+    private IEnumerator EnableInputCooldowns(float seconds)
+    {
+        yield return new WaitForSecondsRealtime(seconds);
+        EnableInput();
+    }
+
+    private void EnableInput()
+    {
+        _uiControls.InMenu.ExitMenu.started += ContinueGame;
+        _uiControls.InMenu.Enable();
+    }
+
+    private void DisableInput()
+    {
+        _uiControls.InMenu.ExitMenu.started -= ContinueGame;
+        _uiControls.InMenu.Disable();
+    }
+
+    #endregion
 
     private IEnumerator WaitForPanelStart()
     {
@@ -80,14 +114,13 @@ public class PauseManager : MonoBehaviour
         ButtonsActivationControl(true);
     }
 
-
     #region Buttons
     private void SetupButtons()
     {
         b_music.onClick.AddListener(ChangeMusicState);
         b_effects.onClick.AddListener(ChangeEffectsState);
-        b_menu.onClick.AddListener(() => { _audioManager.PlayCrossFade("menumusic"); BlackScreenController.I.FadeOutScene("Menu"); });
-        b_continue.onClick.AddListener(() => { ButtonsActivationControl(false); UIManager.I.ControlPausePanel(false); });
+        b_menu.onClick.AddListener(GoToMenu);
+        b_continue.onClick.AddListener(ContinueGame);
     }
 
     private void ResetButtons()
@@ -119,6 +152,34 @@ public class PauseManager : MonoBehaviour
                 i = 3;
             }
         }
+    }
+
+    #endregion
+
+    #region Button Methods
+
+    private void ContinueGame()
+    {
+        DisableInput();
+        ButtonsActivationControl(false);
+        UIManager.I.ControlPausePanel(false);
+    }
+
+    private void ContinueGame(InputAction.CallbackContext obj)
+    {
+        ContinueGame();
+    }
+
+    private void GoToMenu()
+    {
+        DisableInput();
+        _audioManager.PlayCrossFade("menumusic"); 
+        BlackScreenController.I.FadeOutScene("Menu");
+    }
+
+    private void GoToMenu(InputAction.CallbackContext obj)
+    {
+        GoToMenu();
     }
 
     #endregion
@@ -195,14 +256,14 @@ public class PauseManager : MonoBehaviour
 
     private IEnumerator MusicCooldown()
     {
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSecondsRealtime(0.1f);
         b_music.enabled = true;
         _musicCooldown = false;
     }
 
     private IEnumerator EffectsCooldown()
     {
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSecondsRealtime(0.1f);
         b_effects.enabled = true;
         _effectsCooldown = false;
     }

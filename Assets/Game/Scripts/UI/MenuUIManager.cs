@@ -1,8 +1,7 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-
-public class MenuUIManager : MonoBehaviour
+using Utils.Singleton;
+public class MenuUIManager : Singleton<MenuUIManager>
 {
     [SerializeField] private GameObject _creditsPanel;
     [SerializeField] private Button b_start;
@@ -12,11 +11,14 @@ public class MenuUIManager : MonoBehaviour
 
     private BlackScreenController _blackScreenController => BlackScreenController.I;
     private AudioManager _audioManager => AudioManager.I;
+
+    private new void Awake() { }
+
     private void Start()
     {
         _audioManager.FadeInMusic("menumusic");
-        Helpers.LockMouse(false);
         ButtonSetup();
+        Helpers.LockMouse(false);
     }
 
     private void ButtonSetup()
@@ -35,7 +37,7 @@ public class MenuUIManager : MonoBehaviour
         _audioManager.PlayCrossFade("mainmusic");
     }
 
-    private void ControlCreditsPanel(bool state)
+    public void ControlCreditsPanel(bool state)
     {
         _blackScreenController.FadePanel(_creditsPanel, state);
     }
