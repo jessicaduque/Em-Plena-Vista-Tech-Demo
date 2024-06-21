@@ -45,16 +45,16 @@ public class UIManager : Singleton<UIManager>
     private void OnEnable()
     {
         StartCoroutine(EnableInputCooldowns(Helpers.blackFadeTime));
+
+        GameController.I._gamepadConnectedEvent += () => ChangeButtonsSpritesInput(true);
+        GameController.I._gamepadDisconnectedEvent += () => ChangeButtonsSpritesInput(false);
     }
     private void OnDisable()
     {
         StopAllCoroutines();
-    }
 
-    private void Start()
-    {
-        GameController.I._gamepadConnectedEvent += () => ChangeButtonsSpritesInput(true);
-        GameController.I._gamepadDisconnectedEvent += () => ChangeButtonsSpritesInput(false);
+        GameController.I._gamepadConnectedEvent -= () => ChangeButtonsSpritesInput(true);
+        GameController.I._gamepadDisconnectedEvent -= () => ChangeButtonsSpritesInput(false);
     }
 
     #region Input
@@ -70,6 +70,7 @@ public class UIManager : Singleton<UIManager>
     {
         yield return new WaitForSecondsRealtime(seconds);
         Time.timeScale = 1;
+        ThirdPersonController.I.EnableInputs();
         EnableInput();
     }
 
@@ -127,9 +128,11 @@ public class UIManager : Singleton<UIManager>
     {
         if (state)
         {
+            StopAllCoroutines();
             Helpers.LockMouse(false);
-            DisableInput();
+            ThirdPersonController.I.DisableInputs();
             Time.timeScale = 0;
+            DisableInput();
             Helpers.FadeInPanel(_pausePanel);
         }
         else
@@ -148,7 +151,10 @@ public class UIManager : Singleton<UIManager>
     public void ControlEndPanel(bool state)
     {
         if (state)
+        {
+            Helpers.LockMouse(false);
             _blackScreenController.FadePanel(_endPanel, true);
+        }
         else
         {
             _audioManager.PlayCrossFade("menumusic");

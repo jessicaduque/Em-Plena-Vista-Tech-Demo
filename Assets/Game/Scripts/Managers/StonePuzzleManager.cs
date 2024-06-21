@@ -26,7 +26,7 @@ public class StonePuzzleManager : Singleton<StonePuzzleManager>
     private int _roots1Amount = 0; // Caches amount of type 1 roots in the scene
     private int _roots2Amount = 0; // Caches amount of type 2 roots in the scene
 
-    private GameObject _player; // Gets the player gameobject
+    private GameObject _playerObject; // Gets the player gameobject
 
     private UIManager _uiManager => UIManager.I; // Gets the player gameobject
     private ThirdPersonController _thirdPlayerController => ThirdPersonController.I; // Gets the player's third person controller script instance
@@ -46,7 +46,7 @@ public class StonePuzzleManager : Singleton<StonePuzzleManager>
     /// </summary>
     private void Start()
     {
-        _player = Player.I.gameObject;
+        _playerObject = Player.I.gameObject;
 
         GameObject[] roots = GameObject.FindGameObjectsWithTag("Root");
         for (int i = 0; i < roots.Length; i++)
@@ -95,8 +95,8 @@ public class StonePuzzleManager : Singleton<StonePuzzleManager>
         ActivateRoots();
         yield return new WaitForSeconds(0.1f);
 
-        _player.transform.position = new Vector3(_lastCheckpointTransform.position.x, _player.transform.position.y, _lastCheckpointTransform.position.z);
-        _player.transform.rotation = _lastCheckpointTransform.rotation;
+        _playerObject.transform.position = new Vector3(_lastCheckpointTransform.position.x, _playerObject.transform.position.y, _lastCheckpointTransform.position.z);
+        _playerObject.transform.rotation = _lastCheckpointTransform.rotation;
 
         _cameraCheckpoint.SetActive(true);
 
@@ -197,7 +197,8 @@ public class StonePuzzleManager : Singleton<StonePuzzleManager>
             _cameraCheckpoint = lastCheckpointScript.cameraCheckpoint;
         }
         else
-            _lastCheckpointTransform = null;
+            _lastCheckpointTransform = null;    
+
         Destroy(lastCheckpointScript.gameObject);
     }
 

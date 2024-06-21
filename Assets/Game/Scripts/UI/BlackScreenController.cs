@@ -81,6 +81,7 @@ public class BlackScreenController : Singleton<BlackScreenController>
 
     public void CameraChangeFade(GameObject cameraOff, GameObject cameraOn)
     {
+        _uiManager.DisableInput();
         _blackScreen_Panel.SetActive(true);
         _thirdPersonController.DisableInputs();
         if(_uiManager.GetActiveCamera() != cameraOn)
@@ -93,6 +94,7 @@ public class BlackScreenController : Singleton<BlackScreenController>
                 {
                     _thirdPersonController.EnableInputs();
                     _blackScreen_Panel.SetActive(false);
+                    _uiManager.EnableInput();
                 });
             });
         }

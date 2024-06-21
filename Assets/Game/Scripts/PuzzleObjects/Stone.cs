@@ -16,6 +16,7 @@ public class Stone : MonoBehaviour, IInteractable
     private ThirdPersonAnimation _thirdPersonAnimation => ThirdPersonAnimation.I;
     private ThirdPersonController _thirdPersonController => ThirdPersonController.I;
     private AudioManager _audioManager => AudioManager.I;
+    private UIManager _uiManager => UIManager.I;
 
     void Awake()
     {
@@ -108,6 +109,7 @@ public class Stone : MonoBehaviour, IInteractable
 
     private void StartInteract()
     {
+        _uiManager.DisableInput();
         _thirdPersonController.DisableInputs();
         StartCoroutine(TurnToInteractable());
     }
@@ -139,6 +141,7 @@ public class Stone : MonoBehaviour, IInteractable
         _player.transform.DOMove(_player.transform.position + _stoneDirection * _stoneMoveOffset, 5).OnComplete(() => {
            _thirdPersonAnimation.SetBool("Pushing", false);
             _thirdPersonController.EnableInputs();
+            _uiManager.EnableInput();
         });
     }
 

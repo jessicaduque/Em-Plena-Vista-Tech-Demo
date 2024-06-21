@@ -9,7 +9,6 @@ public class Player : Singleton<Player>
 {
     [SerializeField] GameObject _normalPlayerBody;
     [SerializeField] GameObject _occuludedPlayerBody;
-    private Rigidbody _rb; // Player's rigidbody
     // Puzzle variables
     public bool isInPuzzle { get; private set; } = false; // Indicates if player is inside puzzle area (to reduce update checks)
 
@@ -20,7 +19,6 @@ public class Player : Singleton<Player>
     /// </summary>
     private new void Awake()
     {
-        _rb = this.GetComponent<Rigidbody>();
     }
 
     private IEnumerator ControlIndicationWait()
@@ -35,21 +33,33 @@ public class Player : Singleton<Player>
     /// Defines if player is inside the puzzle space or not
     /// </summary>
     /// <param name="isInPuzzle">Bool to set if player is inside the puzzle space or not</param>
-    public void SetIsInPuzzle(bool isInPuzzle)
+    public void SetIsInPuzzle(bool isInPuzzle, bool lastPuzzleEnter)
     {
         this.isInPuzzle = isInPuzzle;
-        _normalPlayerBody.SetActive(!isInPuzzle);
-        _occuludedPlayerBody.SetActive(isInPuzzle);
-        if (isInPuzzle && _stonePuzzleManager.GetLastCheckpointTransform() != null)
+        SetPlayerBody(isInPuzzle);
+        if (!lastPuzzleEnter)
         {
-            StartCoroutine(ControlIndicationWait());
+            if (isInPuzzle && _stonePuzzleManager.GetLastCheckpointTransform() != null)
+            {
+                StartCoroutine(ControlIndicationWait());
+            }
+            else
+            {
+                StopAllCoroutines();
+                _uiManager.ControlIndicationResetInfo(false);
+            }
         }
         else
         {
-            StopAllCoroutines();
-            _uiManager.ControlIndicationResetInfo(false);
+            this.isInPuzzle = false;
         }
-        
+    }
+    
+    public void SetPlayerBody(bool state)
+    {
+        _normalPlayerBody.SetActive(!state);
+        _occuludedPlayerBody.SetActive(state);
+        ThirdPersonAnimation.I.GetAnimator();
     }
 
     #endregion

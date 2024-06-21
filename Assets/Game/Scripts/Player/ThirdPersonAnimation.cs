@@ -15,7 +15,7 @@ public class ThirdPersonAnimation : Singleton<ThirdPersonAnimation>
 
     private new void Awake()
     {
-        _animator = this.GetComponentInChildren<Animator>();
+        GetAnimator();
         _rb = this.GetComponent<Rigidbody>();
     }
 
@@ -60,6 +60,11 @@ public class ThirdPersonAnimation : Singleton<ThirdPersonAnimation>
     {
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, _feetPointRadius);
+    }
+
+    public void GetAnimator()
+    {
+        _animator = this.GetComponentInChildren<Animator>();
     }
 
 }

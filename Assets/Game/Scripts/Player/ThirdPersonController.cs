@@ -1,5 +1,4 @@
 using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -42,6 +41,11 @@ public class ThirdPersonController : Utils.Singleton.Singleton<ThirdPersonContro
         EnableInputs();
     }
 
+    private void OnDisable()
+    {
+        DisableInputs();
+    }
+
     private void FixedUpdate()
     {
         if (_puzzleCameraMovement)
@@ -60,7 +64,7 @@ public class ThirdPersonController : Utils.Singleton.Singleton<ThirdPersonContro
         _playerActionsAsset.Player.Run.canceled += EndRun;
         _maxFinalSpeed = _maxWalkSpeed;
 
-        _interactor.enabled = true;
+        _interactor.ControlActivationInteractor(true);
 
         _playerActionsAsset.Player.Enable();
     }
@@ -72,7 +76,7 @@ public class ThirdPersonController : Utils.Singleton.Singleton<ThirdPersonContro
         _playerActionsAsset.Player.Run.started -= StartRun;
         _playerActionsAsset.Player.Run.canceled -= EndRun;
 
-        _interactor.enabled = false;
+        _interactor.ControlActivationInteractor(false);
 
         _playerActionsAsset.Player.Disable();
     }
