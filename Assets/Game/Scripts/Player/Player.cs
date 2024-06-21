@@ -7,6 +7,8 @@ using Utils.Singleton;
 /// </summary>
 public class Player : Singleton<Player>
 {
+    [SerializeField] GameObject _normalPlayerBody;
+    [SerializeField] GameObject _occuludedPlayerBody;
     private Rigidbody _rb; // Player's rigidbody
     // Puzzle variables
     public bool isInPuzzle { get; private set; } = false; // Indicates if player is inside puzzle area (to reduce update checks)
@@ -36,6 +38,8 @@ public class Player : Singleton<Player>
     public void SetIsInPuzzle(bool isInPuzzle)
     {
         this.isInPuzzle = isInPuzzle;
+        _normalPlayerBody.SetActive(!isInPuzzle);
+        _occuludedPlayerBody.SetActive(isInPuzzle);
         if (isInPuzzle && _stonePuzzleManager.GetLastCheckpointTransform() != null)
         {
             StartCoroutine(ControlIndicationWait());

@@ -11,6 +11,7 @@ public class UIManager : Singleton<UIManager>
 {
     private UIControls _uiControls; // Input asset for UI controls
 
+    [SerializeField] CanvasGroup _indicationMovementSystemCanvasGroup;
     [SerializeField] CanvasGroup _indicationResetCanvasGroup;
     private CanvasGroup _interactionButtonCanvasGroup; // Canvas group for the HUD interaction button indication
     private float _hudButtonsFadeTime = 0.5f; // Time for fade in and out of interaction button indication
@@ -23,6 +24,9 @@ public class UIManager : Singleton<UIManager>
     [SerializeField] private Image im_indicationResetButton; // Interaction button Image for indication
     [SerializeField] private Sprite _indicationResetButtonGamepad;  
     [SerializeField] private Sprite _indicationResetButtonKeyboardMouse;
+    [SerializeField] private Image[] im_MovementIndication; 
+    [SerializeField] private Sprite[] _indicationButtonGamepad;
+    [SerializeField] private Sprite[] _indicationButtonKeyboardMouse;
 
     [SerializeField] private GameObject _pausePanel; // Pause panel for control
     [SerializeField] private GameObject _endPanel; // End panel for conttrol
@@ -32,8 +36,8 @@ public class UIManager : Singleton<UIManager>
     private new void Awake()
     {
         _interactionButtonCanvasGroup = im_interactionButton.GetComponent<CanvasGroup>();
-        im_interactionButton.sprite = (Gamepad.all.Count > 0 ? _interactionButtonGamepad : _interactionButtonKeyboardMouse);
-        im_indicationResetButton.sprite = (Gamepad.all.Count > 0 ? _indicationResetButtonGamepad : _indicationResetButtonKeyboardMouse);
+
+        ChangeButtonsSpritesInput(Gamepad.all.Count > 0);
 
         _uiControls = new UIControls();
     }
@@ -55,7 +59,7 @@ public class UIManager : Singleton<UIManager>
 
     #region Input
 
-    private void EnableInput()
+    public void EnableInput()
     {
         _uiControls.InGame.PauseGame.started += ControlPausePanel;
 
@@ -69,7 +73,7 @@ public class UIManager : Singleton<UIManager>
         EnableInput();
     }
 
-    private void DisableInput()
+    public void DisableInput()
     {
         _uiControls.InGame.PauseGame.started -= ControlPausePanel;
 
@@ -84,6 +88,10 @@ public class UIManager : Singleton<UIManager>
     {
         im_interactionButton.sprite = (state ? _interactionButtonGamepad : _interactionButtonKeyboardMouse);
         im_indicationResetButton.sprite = (state ? _indicationResetButtonGamepad : _indicationResetButtonKeyboardMouse);
+        for(int i=0; i < im_MovementIndication.Length; i++)
+        {
+            im_MovementIndication[i].sprite = (state ? _indicationButtonGamepad[i] : _indicationButtonKeyboardMouse[i]);
+        }
     }
     public void ControlInteractionButton(bool state)
     {
@@ -104,6 +112,11 @@ public class UIManager : Singleton<UIManager>
     {
         _indicationResetCanvasGroup.DOKill();
         _indicationResetCanvasGroup.DOFade(state ? 1 : 0, _hudButtonsFadeTime);
+    }
+
+    public void ControlIndicationMovementInfo()
+    {
+        _indicationMovementSystemCanvasGroup.DOFade(0, _hudButtonsFadeTime);
     }
 
     #endregion

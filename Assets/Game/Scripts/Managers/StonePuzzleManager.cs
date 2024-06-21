@@ -71,6 +71,7 @@ public class StonePuzzleManager : Singleton<StonePuzzleManager>
     /// </summary>
     public IEnumerator ResetStonePuzzle()
     {
+        _uiManager.DisableInput();
         _thirdPlayerController.DisableInputs();
         _blackScreenController.FadeInBlack();
 
@@ -112,7 +113,7 @@ public class StonePuzzleManager : Singleton<StonePuzzleManager>
         {
             yield return null;
         }
-
+        _uiManager.EnableInput();
         _thirdPlayerController.EnableInputs();
     }
 

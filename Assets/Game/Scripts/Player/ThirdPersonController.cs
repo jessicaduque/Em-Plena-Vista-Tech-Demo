@@ -42,11 +42,6 @@ public class ThirdPersonController : Utils.Singleton.Singleton<ThirdPersonContro
         EnableInputs();
     }
 
-    private void OnDisable()
-    {
-        DisableInputs();
-    }
-
     private void FixedUpdate()
     {
         if (_puzzleCameraMovement)
