@@ -56,11 +56,11 @@ public class ThirdPersonAnimation : Singleton<ThirdPersonAnimation>
     }
     #endregion
 
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, _feetPointRadius);
-    }
+    //private void OnDrawGizmos()
+    //{
+    //    Gizmos.color = Color.yellow;
+    //    Gizmos.DrawWireSphere(transform.position, _feetPointRadius);
+    //}
 
     public void GetAnimator()
     {
