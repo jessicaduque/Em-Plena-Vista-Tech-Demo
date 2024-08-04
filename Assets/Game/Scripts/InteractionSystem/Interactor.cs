@@ -4,19 +4,15 @@ using UnityEngine;
 /// </summary>
 public class Interactor : MonoBehaviour
 {
-    [SerializeField] private Transform _interactionPoint; // Point where collider to check interactable objects will be originated from
-    [SerializeField] private float _interactionPointRadius = 0.5f; // Interactor radius for its area
+    [SerializeField] private Transform _interactionPoint; // Point where collider for checking interactable objects will originated from
+    [SerializeField] private float _interactionPointRadius = 0.5f; // Radius for interactor collider's area
     [SerializeField] private LayerMask _interactableMask; // Layer the interactable will be able to collide with
 
     private readonly Collider[] _colliders = new Collider[3]; // Array to catch colliders that collide with the interactor
     [SerializeField] private int _numFound; // Amount of colliders found that collide with the interactor
     private int _previousNumFound; // Previous amount of colliders that collided with the interactor
-    private bool _interactorEnabled = true;
+    private bool _interactorEnabled = true; // Bool to keep track if interactor is enabled or disabled
     private UIManager _uiManager => UIManager.I; // Gets the UIManager Instance
-
-    /// <summary>
-    /// Resets previous amount of colliders detected and disables the UI interction button
-    /// </summary>
 
     /// <summary>
     /// Every frame, creates the interactor collider, checks if it collides with any interactable objects 
@@ -69,6 +65,11 @@ public class Interactor : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Controls the state of the interactor being enabled or disabled, and
+    /// resets previous amount of colliders detected and disables the UI interction button if disabled
+    /// </summary>
+    /// <param name="state">Boolean value to determine if interactor is enabled or disabled</param>
     public void ControlActivationInteractor(bool state)
     {
         _interactorEnabled = state;
@@ -79,7 +80,7 @@ public class Interactor : MonoBehaviour
         }
     }
     /// <summary>
-    /// Draws in red the interactor collider generated during Update so it can be 
+    /// Draws the interactor collider generated during Update in red so it can be 
     /// seen as a gizmo in the scene window
     /// </summary>
     private void OnDrawGizmos()

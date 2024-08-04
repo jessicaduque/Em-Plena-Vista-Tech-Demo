@@ -123,7 +123,6 @@ public class StonePuzzleManager : Singleton<StonePuzzleManager>
     /// </summary>
     public void ActivateRootsAnimation()
     {
-
         for (int i = 0; i < _roots1Amount; i++)
         {
             if (_roots1Active)
@@ -203,10 +202,9 @@ public class StonePuzzleManager : Singleton<StonePuzzleManager>
     }
 
     /// <summary>
-    /// Gets player gameobject, finds all roots in scene and separates them by their types, 
-    /// does initial activation for the beginning of the scene
+    /// Sets roots of type one to the active or unactive ones
     /// </summary>
-    /// <param name="state">Indicates new state for the bool that indicates if type 1 roots are activated or not</param>
+    /// <param name="state">Indicates if roots type 1 will will active or not</param>
     private void SetRoots1Active(bool state)
     {
         _roots1Active = state;
