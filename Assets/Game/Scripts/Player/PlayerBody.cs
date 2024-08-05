@@ -4,7 +4,7 @@ using UnityEngine;
 /// </summary>
 public class PlayerBody : MonoBehaviour
 {
-    private ThirdPersonController _thirdPersonController => ThirdPersonController.I; // Gets the player third person controller script instance
+    private ThirdPersonController _thirdPersonController => ThirdPersonController.I; // Gets the player ThirdPersonController script instance
     /// <summary>
     /// Method called from end of animation events to enable the player's inputs 
     /// </summary>

@@ -11,8 +11,8 @@ public class TeleportPlayer : MonoBehaviour
     [SerializeField] protected Vector3 _finalPosition; // Position for player to be teleported to
     [SerializeField] protected Vector3 _lookingDirection; // Direction player should be facing when teleported
 
-    protected ThirdPersonController _thirdPlayerController => ThirdPersonController.I; // Gets the player's third person controller script instance
-    private BlackScreenController _blackScreenController => BlackScreenController.I; // Gets the UI black screen controller script instance
+    protected ThirdPersonController _thirdPlayerController => ThirdPersonController.I; // Gets the player's ThirdPersonController script instance
+    private BlackScreenController _blackScreenController => BlackScreenController.I; // Gets the UI BlackScreenController script instance
 
     /// <summary>
     /// Gets player gameobject

@@ -2,31 +2,37 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+/// <summary>
+/// Controls all player controls for movement
+/// </summary>
 public class ThirdPersonController : Utils.Singleton.Singleton<ThirdPersonController>
 {
     // Input fields
-    private ThirdPersonActionsAsset _playerActionsAsset;
-    private InputAction _move;
+    private ThirdPersonActionsAsset _playerActionsAsset; // Input actions asset for the third person movement
+    private InputAction _move; // Inputaction for player movement
 
     // Movement fields
-    private Rigidbody _rb;
-    public float maxRunSpeed = 8f;
-    private float _maxFinalSpeed = 4f;
-    [SerializeField] private float _movementForce = 1f;
-    [SerializeField] private float _maxWalkSpeed = 4f;
-    [SerializeField] private Vector3 _forceDirection = Vector3.zero;
-    [SerializeField] private float _lookAtSpeed = 10f;
+    private Rigidbody _rb; // Player rigidbody component
+    public float maxRunSpeed = 8f; // Max speed player can have when running
+    private float _maxFinalSpeed = 4f; // Max speed player has depending on if running or walking
+    [SerializeField] private float _movementForce = 1f; // Movement force applied on player when moving
+    [SerializeField] private float _maxWalkSpeed = 4f; // Max speed player ca have walking
+    [SerializeField] private Vector3 _forceDirection = Vector3.zero; // Vector3 for the direction of movement player should go in
+    [SerializeField] private float _lookAtSpeed = 10f; // Speed to player rotation to look a certain direction
 
     // Puzzle fields
-    private Interactor _interactor;
-    private bool _canInteract = true;
+    private Interactor _interactor; // Interactor script on player
+    private bool _canInteract = true; // Boolean value to control if player can interact or not with interactables at the moment
 
-    [SerializeField] private Camera _playerMainCamera;
-    [SerializeField] private bool _puzzleCameraMovement;
+    [SerializeField] private Camera _playerMainCamera; // The main camera out of all cameras for main gameplay
+    [SerializeField] private bool _puzzleCameraMovement; // Boolean value to indicate if the current camera movement is for puzzle sitations
 
-    private Player _player => Player.I;
-    private StonePuzzleManager _stonePuzzleManager => StonePuzzleManager.I;
+    private Player _player => Player.I; // Gets player script instance
+    private StonePuzzleManager _stonePuzzleManager => StonePuzzleManager.I; // Gets StonePuzzleManager script instance
 
+    /// <summary>
+    /// Rewrites singleton Awake and gets inicial player components
+    /// </summary>
     private new void Awake()
     {
         _rb = this.GetComponent<Rigidbody>();
@@ -36,16 +42,24 @@ public class ThirdPersonController : Utils.Singleton.Singleton<ThirdPersonContro
         _move = _playerActionsAsset.Player.Move;
     }
 
+    /// <summary>
+    /// Enables player inputs when script enabled
+    /// </summary>
     private void OnEnable()
     {
         EnableInputs();
     }
-
+    /// <summary>
+    /// Disables player inputs when script disabled
+    /// </summary>
     private void OnDisable()
     {
         DisableInputs();
     }
 
+    /// <summary>
+    /// Every physics frame update camera movement depending on if Player in a puzzle or not
+    /// </summary>
     private void FixedUpdate()
     {
         if (_puzzleCameraMovement)
